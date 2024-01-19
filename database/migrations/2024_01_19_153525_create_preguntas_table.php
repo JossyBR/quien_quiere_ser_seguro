@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('respuesta2');
             $table->string('respuesta3');
             $table->string('respuesta4');
-            $table->unsignedTinyInteger('respuesta_correcta');
+            $table->string('respuesta_correcta');
             $table->string('dificultad')->nullable();
             $table->string('categoria')->nullable();
             $table->timestamps();

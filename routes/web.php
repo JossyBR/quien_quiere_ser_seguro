@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PreguntaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/pregunta', [PreguntaController::class, 'index'])->name('preguntas.index');
+Route::get('/crear/pregunta', [PreguntaController::class, 'create'])->name('preguntas.create');
+Route::post('/pregunta', [PreguntaController::class, 'store']);
