@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Crear Preguntas</h2>
-    <form method="POST" >
+    <form method="POST"  action="{{route('pregunta.store')}}">
         @csrf
         <div class="form-group">
             <label for="pregunta">Escribe una pregunta</label>

@@ -20,4 +20,4 @@ Route::get('/', function () {
 
 Route::get('/pregunta', [PreguntaController::class, 'index'])->name('preguntas.index');
 Route::get('/crear/pregunta', [PreguntaController::class, 'create'])->name('preguntas.create');
-Route::post('/pregunta', [PreguntaController::class, 'store']);
+Route::post('/pregunta', [PreguntaController::class, 'store'])->name('pregunta.store');

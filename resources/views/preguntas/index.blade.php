@@ -7,6 +7,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="{{route('preguntas.create')}}">Crear Pregunta</a>
     <h1>Quien Quiere ser seguro</h1>
         @foreach($preguntas as $pregunta)
         <div>

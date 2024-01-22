@@ -18,27 +18,29 @@ class PreguntaController extends Controller
         return view('preguntas.create');
     }
 
-    // public function store (Request $request) 
-    // {
-    //     $request->validate([
-    //         'pregunta' => 'required',
-    //         'respuesta1' => 'required',
-    //         'respuesta2' => 'required',
-    //         'respuesta3' => 'required',
-    //         'respuesta4' => 'required',
-    //     ]);
+    public function store (Request $request) 
+    {
+        $request->validate([
+            'pregunta' => 'required',
+            'respuesta1' => 'required',
+            'respuesta2' => 'required',
+            'respuesta3' => 'required',
+            'respuesta4' => 'required',
+            'respuesta_correcta' => 'required',
+        ]);
 
-    //     $preguntas = new Pregunta;
-    //     $preguntas->pregunta = $request->pregunta;
-    //     $preguntas->respuesta1 = $request->respuesta1;
-    //     $preguntas->respuesta2 = $request->respuesta2;
-    //     $preguntas->respuesta3 = $request->respuesta3;
-    //     $preguntas->respuesta4 = $request->respuesta4;
+        $preguntas = new Pregunta;
+        $preguntas->pregunta = $request->pregunta;
+        $preguntas->respuesta1 = $request->respuesta1;
+        $preguntas->respuesta2 = $request->respuesta2;
+        $preguntas->respuesta3 = $request->respuesta3;
+        $preguntas->respuesta4 = $request->respuesta4;
+        $preguntas->respuesta_correcta = $request->respuesta_correcta;
 
-    //     $preguntas->save();
+        $preguntas->save();
 
-    //     return redirect()->route('preguntas.index')->with('status', 'Solicitud creada exitosamente!');
-    // }
+        return redirect()->route('preguntas.index')->with('status', 'Solicitud creada exitosamente!');
+    }
 
     
 }
