@@ -42,5 +42,13 @@ class PreguntaController extends Controller
         return redirect()->route('preguntas.index')->with('status', 'Solicitud creada exitosamente!');
     }
 
+
+    public function verificarRespuesta(Request $request, $id) {
+        $pregunta = Pregunta::findOrFail($id); //Encuentra la pregunta por su ID. Si no existe, arroja un error 404.
+    
+        return response()->json([
+            'correcta' => $request->respuesta == $pregunta->respuesta_correcta
+        ]);
+    }
     
 }
