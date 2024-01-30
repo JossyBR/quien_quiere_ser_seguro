@@ -10,13 +10,17 @@
 <div>
     <a href="{{ route('reiniciar_juego') }}">Reiniciar Juego</a>
 
+    <button onclick='activarCincuenta({{ $preguntaActual->id }})'>50/50</button>
+
+
     <h2>{{ $preguntaActual->pregunta }}</h2>
     <div id="respuestas-{{ $preguntaActual->id }}">
-        @foreach([$preguntaActual->respuesta1, $preguntaActual->respuesta2, $preguntaActual->respuesta3, $preguntaActual->respuesta4] as $respuesta)
-            <button data-pregunta-id="{{ $preguntaActual->id }}" data-respuesta="{{ $respuesta }}" onclick="verificarRespuesta(this)">
-                {{ $respuesta }}
-            </button>
-        @endforeach
+    @foreach([$preguntaActual->respuesta1, $preguntaActual->respuesta2, $preguntaActual->respuesta3, $preguntaActual->respuesta4] as $index => $respuesta)
+        <button id="respuesta-{{ $preguntaActual->id }}-{{ $index }}" data-pregunta-id="{{ $preguntaActual->id }}" data-respuesta="{{ $respuesta }}" onclick="verificarRespuesta(this)">
+        {{ $respuesta }}
+        </button>
+    @endforeach
+
     </div>
 
     <div>
@@ -67,6 +71,29 @@ function actualizarPuntaje(puntaje) {
     document.getElementById('puntaje').innerText = 'Puntaje actual: ' + puntaje;
 }
 
+function activarCincuenta(preguntaId) {
+    //Se realiza una solicitud GET a la ruta del comodín 50/50
+    fetch('{{ url("/ayuda-cincuenta") }}/' + preguntaId)
+    .then(response => response.json()) // Procesa la respuesta como JSON.
+    .then(data => {
+        // console.log(data);
+        // 'data' debe contener las dos respuestas que deben quedar visibles
+
+        // Convierte 'data' en un conjunto (Set) para facilitar la comprobación
+        let respuestasVisibles = new Set(data);
+
+        // Itera sobre todos los botones de respuesta de la pregunta actual.
+        document.querySelectorAll(`#respuestas-${preguntaId} button`).forEach(boton => {
+            // Obtiene la respuesta asociada al botón.
+            let respuesta = boton.getAttribute('data-respuesta');
+
+            // Oculta el botón si su respuesta no está en el conjunto 'respuestasVisibles'
+            if (!respuestasVisibles.has(respuesta)) {
+                boton.style.display = 'none';
+            }
+        });
+    });
+}
 
 </script>
 </html>

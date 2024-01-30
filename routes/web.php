@@ -28,8 +28,10 @@ Route::post('/verificar-respuesta/{id}', [PreguntaController::class, 'verificarR
 Route::get('/siguiente-pregunta/{indice}', [PreguntaController::class, 'siguientePregunta'])->name('siguiente_pregunta');
 Route::get('/pregunta-anterior/{indice}', [PreguntaController::class, 'preguntaAnterior'])->name('pregunta_anterior');
 
-
 //Para reiniciar el juego
 Route::get('/reiniciar-juego', [PreguntaController::class, 'reiniciarJuego'])->name('reiniciar_juego');
 
+
+//Comodin 50/50
+Route::get('/ayuda-cincuenta/{id}', [PreguntaController::class, 'ayudaCincuenta'])->name('ayuda_cincuenta');
 
