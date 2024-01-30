@@ -8,6 +8,8 @@
 <body>
 
 <div>
+    <a href="{{ route('reiniciar_juego') }}">Reiniciar Juego</a>
+
     <h2>{{ $preguntaActual->pregunta }}</h2>
     <div id="respuestas-{{ $preguntaActual->id }}">
         @foreach([$preguntaActual->respuesta1, $preguntaActual->respuesta2, $preguntaActual->respuesta3, $preguntaActual->respuesta4] as $respuesta)
@@ -15,6 +17,10 @@
                 {{ $respuesta }}
             </button>
         @endforeach
+    </div>
+
+    <div>
+        <p id="puntaje">Puntaje actual: {{ session('puntaje', 0) }}</p>
     </div>
     <!-- Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0-->
     @if($indiceActual < $totalPreguntas - 1) 
@@ -53,8 +59,14 @@ function verificarRespuesta(elemento) { //elemento es el botón clickeado
         } else {
             elemento.style.backgroundColor = 'red';
         }
+        actualizarPuntaje(data.puntaje); // Actualiza el puntaje usando la respuesta del servidor
     });
 }
+
+function actualizarPuntaje(puntaje) {
+    document.getElementById('puntaje').innerText = 'Puntaje actual: ' + puntaje;
+}
+
 
 </script>
 </html>

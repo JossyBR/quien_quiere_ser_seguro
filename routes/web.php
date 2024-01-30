@@ -29,3 +29,7 @@ Route::get('/siguiente-pregunta/{indice}', [PreguntaController::class, 'siguient
 Route::get('/pregunta-anterior/{indice}', [PreguntaController::class, 'preguntaAnterior'])->name('pregunta_anterior');
 
 
+//Para reiniciar el juego
+Route::get('/reiniciar-juego', [PreguntaController::class, 'reiniciarJuego'])->name('reiniciar_juego');
+
+
