@@ -23,3 +23,9 @@ Route::get('/crear/pregunta', [PreguntaController::class, 'create'])->name('preg
 Route::post('/pregunta', [PreguntaController::class, 'store'])->name('pregunta.store');
 
 Route::post('/verificar-respuesta/{id}', [PreguntaController::class, 'verificarRespuesta'])->name('verificar_respuesta');
+
+//Esto es para manejar la siguiente y anterior pregunta
+Route::get('/siguiente-pregunta/{indice}', [PreguntaController::class, 'siguientePregunta'])->name('siguiente_pregunta');
+Route::get('/pregunta-anterior/{indice}', [PreguntaController::class, 'preguntaAnterior'])->name('pregunta_anterior');
+
+

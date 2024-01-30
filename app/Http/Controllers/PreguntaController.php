@@ -7,10 +7,20 @@ use App\Models\Pregunta;
 
 class PreguntaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $preguntas = Pregunta::all();
-        return view('preguntas.index', ['preguntas' =>$preguntas]);
+        // $preguntas = Pregunta::all();
+        // return view('preguntas.index', ['preguntas' =>$preguntas]);
+
+        $preguntas = Pregunta::all(); // Obtiene todas las preguntas
+        $indiceActual = $request->session()->get('indiceActual', 0); // Obtiene el índice actual de la sesión, por defecto es 0
+        $preguntaActual = $preguntas->get($indiceActual);// Obtiene la pregunta actual basada en el índice
+
+        return view('preguntas.index', [ // Devuelve la vista con los datos necesarios
+        'preguntaActual' => $preguntaActual,
+        'indiceActual' => $indiceActual,
+        'totalPreguntas' => $preguntas->count()
+    ]);
     }
 
     public function create()
@@ -50,5 +60,19 @@ class PreguntaController extends Controller
             'correcta' => $request->respuesta == $pregunta->respuesta_correcta
         ]);
     }
+
+    public function siguientePregunta(Request $request, $indice)
+{
+    $request->session()->put('indiceActual', $indice);
+    return redirect()->route('preguntas.index');
+}
+
+public function preguntaAnterior(Request $request, $indice)
+{
+    $request->session()->put('indiceActual', $indice);
+    return redirect()->route('preguntas.index');
+}
+
+
     
 }

@@ -6,35 +6,27 @@
     <title>Seguridad laboral</title>
 </head>
 <body>
-@foreach($preguntas as $pregunta)
-<!-- <div>
-    <h2>{{ $pregunta->pregunta }}</h2>
-    <form action="{{ route('preguntas.create') }}" method="POST">
-        @csrf
-        <ul>
-            <li><button type="radio" name="respuesta" value="1"> {{ $pregunta->respuesta1 }}</button></li>
-            <li><button type="radio" name="respuesta" value="2"> {{ $pregunta->respuesta2 }}</button></li>
-            <li><button type="radio" name="respuesta" value="3"> {{ $pregunta->respuesta3 }}</button></li>
-            <li><button type="radio" name="respuesta" value="4"> {{ $pregunta->respuesta4 }}</button></li>
-            <input type="text" value="{{ $pregunta->respuesta_correcta }}">
-        </ul>
-    </form>
-</div> -->
 
 <div>
-    <h2>{{ $pregunta->pregunta }}</h2>
-    <!-- Asigna un ID único a cada grupo de respuestas basado en el ID de la pregunta -->
-    <div id="respuestas-{{ $pregunta->id }}">
-        <!-- Itera sobre las respuestas de cada pregunta. -->
-        @foreach([$pregunta->respuesta1, $pregunta->respuesta2, $pregunta->respuesta3, $pregunta->respuesta4] as $index => $respuesta)
-        <button data-pregunta-id="{{ $pregunta->id }}" data-respuesta="{{ $respuesta }}" onclick="verificarRespuesta(this)">
-            {{ $respuesta }}
-        </button>
+    <h2>{{ $preguntaActual->pregunta }}</h2>
+    <div id="respuestas-{{ $preguntaActual->id }}">
+        @foreach([$preguntaActual->respuesta1, $preguntaActual->respuesta2, $preguntaActual->respuesta3, $preguntaActual->respuesta4] as $respuesta)
+            <button data-pregunta-id="{{ $preguntaActual->id }}" data-respuesta="{{ $respuesta }}" onclick="verificarRespuesta(this)">
+                {{ $respuesta }}
+            </button>
         @endforeach
-
     </div>
+    <!-- Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0-->
+    @if($indiceActual < $totalPreguntas - 1) 
+        <a href="{{ route('siguiente_pregunta', $indiceActual + 1) }}">Continuar</a>
+    @endif
+
+    <!-- Verfifica si no se esta en la primera pregunta, si indiceactual es mayor que cero -->
+    @if($indiceActual > 0) 
+        <a href="{{ route('pregunta_anterior', $indiceActual - 1) }}">Anterior</a>
+    @endif
 </div>
-@endforeach  
+
 
 </body>
 
