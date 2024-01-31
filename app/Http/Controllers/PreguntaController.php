@@ -59,7 +59,7 @@ class PreguntaController extends Controller
         $correcta = $request->respuesta == $pregunta->respuesta_correcta;
 
         if ($correcta) {
-            $puntaje = $request->session()->get('puntaje', 0) + 1;
+            $puntaje = $request->session()->get('puntaje', 0) + 100;
             $request->session()->put('puntaje', $puntaje);
         }
 
