@@ -9,10 +9,13 @@
 
 <div>
     <h1>¿QUIEN QUIERE SER SEGURO?</h1>
-    <a href="{{ route('reiniciar_juego') }}">Reiniciar Juego</a>
 
+    <a href="{{ route('reiniciar_juego') }}">Reiniciar Juego</a>
     <button onclick='activarCincuenta({{ $preguntaActual->id }})'>50/50</button>
 
+    <div id="temporizador">Tiempo restante: <span id="tiempo">30</span> segundos</div>
+    <button id="btnIniciarTemporizador" onclick="iniciarTemporizador()">Iniciar Temporizador</button>
+    <button onclick="detenerTemporizador()">Detener Temporizador</button>
 
     <h2>{{ $preguntaActual->pregunta }}</h2>
     <div id="respuestas-{{ $preguntaActual->id }}">
@@ -65,6 +68,8 @@ function verificarRespuesta(elemento) { //elemento es el botón clickeado
             elemento.style.backgroundColor = 'red';
         }
         actualizarPuntaje(data.puntaje); // Actualiza el puntaje usando la respuesta del servidor
+
+        clearInterval(temporizador); // Detener temporizador si se responde en el tiempo limite
     });
 }
 
@@ -95,6 +100,53 @@ function activarCincuenta(preguntaId) {
         });
     });
 }
+
+let temporizador;
+let tiempoRestante = 30; // 30 segundos para responder inicialmente.
+
+// Actualiza la visualización del temporizador y maneja cuando el tiempo se agota
+function actualizarTemporizador() {
+    let elementoTiempo = document.getElementById('tiempo');
+    elementoTiempo.textContent = tiempoRestante;
+
+    if (tiempoRestante <= 0) {
+        clearInterval(temporizador);
+        temporizador = null; // Asegura que el temporizador se detenga correctamente.
+        alert('¡Tiempo agotado!');
+        // Añadir lógica adicional, como pasar a la siguiente pregunta.
+    }
+}
+
+// Inicia o continúa el temporizador desde el tiempo restante actual.
+function iniciarTemporizador() {
+    // Solo inicia el temporizador si no está ya en marcha.
+    if (!temporizador) {
+        temporizador = setInterval(function() {
+            tiempoRestante--;
+            actualizarTemporizador();
+            
+            //Tambien se verifica si el tiempo ha llegado a 0
+            if (tiempoRestante <= 0) {
+                clearInterval(temporizador);
+                temporizador = null; // Asegura que el temporizador se detenga correctamente.
+            }
+        }, 1000);
+    }
+}
+
+// Función para detener el temporizador
+function detenerTemporizador() {
+    if (temporizador) {
+        clearInterval(temporizador);//Detiene el temporizador
+        temporizador = null; // Establece el tempporizador a null
+    }
+    // Opcional: Actualizar la interfaz para indicar que el temporizador se detuvo
+}
+
+// Inicio automático del temporizador
+document.addEventListener('DOMContentLoaded', (event) => {
+    iniciarTemporizador();
+});
 
 </script>
 </html>
