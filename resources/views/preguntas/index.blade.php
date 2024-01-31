@@ -8,6 +8,7 @@
 <body>
 
 <div>
+    <h1>¿QUIEN QUIERE SER SEGURO?</h1>
     <a href="{{ route('reiniciar_juego') }}">Reiniciar Juego</a>
 
     <button onclick='activarCincuenta({{ $preguntaActual->id }})'>50/50</button>
