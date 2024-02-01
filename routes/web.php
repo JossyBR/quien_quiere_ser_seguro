@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\PreguntaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,37 @@ use Inertia\Inertia;
 |
 */
 
+
+// Ruta para iniciar el juego
+Route::get('/juego', [PreguntaController::class, 'index'])->name('juego');
+
+// Ruta para la creación de preguntas
+Route::get('/crear-pregunta', function (){
+    return Inertia::render('CrearPreguntar');
+})->name('preguntas.create');
+
+
+// Ruta para almacenar una nueva pregunta
+Route::post('/pregunta', [PreguntaController::class, 'store'])->name('pregunta.store');
+
+// Ruta para verificar una respuesta
+Route::post('/verificar-respuesta/{id}', [PreguntaController::class, 'verificarRespuesta'])->name('verificar_respuesta');
+
+// Rutas para manejar la siguiente y anterior pregunta
+Route::get('/siguiente-pregunta/{indice}', [PreguntaController::class, 'siguientePregunta'])->name('siguiente_pregunta');
+Route::get('/pregunta-anterior/{indice}', [PreguntaController::class, 'preguntaAnterior'])->name('pregunta_anterior');
+
+// Ruta para reiniciar el juego
+Route::get('/reiniciar-juego', [PreguntaController::class, 'reiniciarJuego'])->name('reiniciar_juego');
+
+// Ruta para el comodín 50/50
+Route::get('/ayuda-cincuenta/{id}', [PreguntaController::class, 'ayudaCincuenta'])->name('ayuda_cincuenta');
+
+
+
+
+
+//Para auth, por ahora no lo estoy utilizando
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
