@@ -28,7 +28,7 @@ class PreguntaController extends Controller
         //Para trabajar con REACT
         return Inertia::render('SerSeguro', [
             'preguntaActual' => $preguntaActual ? $preguntaActual->toArray() : null,
-            // 'indiceActual' => $indiceActual,
+            'indiceActual' => $indiceActual,
             'totalPreguntas' => $preguntas->count(),
             'puntaje' => $request->session()->get('puntaje', 0)
         ]);
@@ -88,17 +88,17 @@ class PreguntaController extends Controller
 //         // ]);
 //     }
 
-//     public function siguientePregunta(Request $request, $indice)
-// {
-//     $request->session()->put('indiceActual', $indice);
-//     return redirect()->route('juego');
-// }
+    public function siguientePregunta(Request $request, $indice)
+{
+    $request->session()->put('indiceActual', $indice);
+    return redirect()->route('juego');
+}
 
-// public function preguntaAnterior(Request $request, $indice)
-// {
-//     $request->session()->put('indiceActual', $indice);
-//     return redirect()->route('juego');
-// }
+public function preguntaAnterior(Request $request, $indice)
+{
+    $request->session()->put('indiceActual', $indice);
+    return redirect()->route('juego');
+}
 
 // public function reiniciarJuego(Request $request)
 // {

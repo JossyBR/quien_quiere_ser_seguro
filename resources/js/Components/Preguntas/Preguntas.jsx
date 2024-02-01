@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { Inertia } from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 
 const Preguntas = ({
     preguntaActual,
@@ -59,6 +59,20 @@ const Preguntas = ({
     //     // Actualizar el estado basado en la respuesta
     // };
 
+    const irASiguientePregunta = () => {
+        const nuevoIndice = indiceActual + 1;
+        if (nuevoIndice < totalPreguntas) {
+            Inertia.get(`/siguiente-pregunta/${nuevoIndice}`);
+        }
+    };
+
+    const irAPreguntaAnterior = () => {
+        const nuevoIndice = indiceActual - 1;
+        if (nuevoIndice >= 0) {
+            Inertia.get(`/pregunta-anterior/${nuevoIndice}`);
+        }
+    };
+
     if (!preguntaActual) return <div>Cargando...</div>;
 
     return (
@@ -89,8 +103,8 @@ const Preguntas = ({
             </div>
 
             <p>Puntaje actual: {puntaje}</p>
-            <button>Continuar</button>
-            <button>Anterior</button>
+            <button onClick={irASiguientePregunta}>Continuar</button>
+            <button onClick={irAPreguntaAnterior}>Anterior</button>
         </div>
     );
 };
