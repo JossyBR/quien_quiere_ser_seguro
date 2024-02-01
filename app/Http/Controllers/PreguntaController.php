@@ -71,22 +71,22 @@ class PreguntaController extends Controller
 //     }
 
 
-//     public function verificarRespuesta(Request $request, $id) {
-//         $pregunta = Pregunta::findOrFail($id); //Encuentra la pregunta por su ID. Si no existe, arroja un error 404.
+    public function verificarRespuesta(Request $request, $id) {
+        $pregunta = Pregunta::findOrFail($id); //Encuentra la pregunta por su ID. Si no existe, arroja un error 404.
 
-//         $correcta = $request->respuesta == $pregunta->respuesta_correcta;
+        $correcta = $request->respuesta == $pregunta->respuesta_correcta;
 
-//         if ($correcta) {
-//             $puntaje = $request->session()->get('puntaje', 0) + 100;
-//             $request->session()->put('puntaje', $puntaje);
-//         }
+        if ($correcta) {
+            $puntaje = $request->session()->get('puntaje', 0) + 100;
+            $request->session()->put('puntaje', $puntaje);
+        }
 
-//         return response()->json(['correcta' => $correcta, 'puntaje' => $request->session()->get('puntaje')]);
+        return response()->json(['correcta' => $correcta, 'puntaje' => $request->session()->get('puntaje')]);
     
-//         // return response()->json([
-//         //     'correcta' => $request->respuesta == $pregunta->respuesta_correcta
-//         // ]);
-//     }
+        // return response()->json([
+        //     'correcta' => $request->respuesta == $pregunta->respuesta_correcta
+        // ]);
+    }
 
     public function siguientePregunta(Request $request, $indice)
 {

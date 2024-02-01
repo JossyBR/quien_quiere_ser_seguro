@@ -43,21 +43,42 @@ const Preguntas = ({
     //     setTemporizador(null);
     // };
 
-    // const verificarRespuesta = async (respuesta) => {
-    //     const response = await fetch(
-    //         `/verificar-respuesta/${preguntaActual.id}`,
-    //         {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 // Asegúrate de incluir el token CSRF si es necesario
-    //             },
-    //             body: JSON.stringify({ respuesta }),
-    //         }
-    //     );
-    //     const data = await response.json();
-    //     // Actualizar el estado basado en la respuesta
-    // };
+    const verificarRespuesta = async (respuesta, index) => {
+        // Obtener el token CSRF del documento
+        const csrfToken = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+
+        const response = await fetch(
+            `/verificar-respuesta/${preguntaActual.id}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Usa la variable csrfToken para enviar el token CSRF
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                body: JSON.stringify({ respuesta }),
+            }
+        );
+
+        const data = await response.json();
+
+        // Lógica para cambiar el color del botón según la respuesta
+        if (data.correcta) {
+            document.getElementById(
+                `respuesta-btn-${index}`
+            ).style.backgroundColor = "green";
+        } else {
+            document.getElementById(
+                `respuesta-btn-${index}`
+            ).style.backgroundColor = "red";
+        }
+
+        // Actualiza el puntaje si es necesario
+    //     // setPuntaje(data.puntaje);
+    };
+
 
     const irASiguientePregunta = () => {
         const nuevoIndice = indiceActual + 1;
@@ -94,8 +115,9 @@ const Preguntas = ({
                     preguntaActual.respuesta4,
                 ].map((respuesta, index) => (
                     <button
+                        id={`respuesta-btn-${index}`} // Asigna un ID único a cada botón
                         key={index}
-                        // onClick={() => verificarRespuesta(respuesta)}
+                        onClick={() => verificarRespuesta(respuesta, index)} // Pasa el index a verificarRespuesta
                     >
                         {respuesta}
                     </button>
