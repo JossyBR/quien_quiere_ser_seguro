@@ -1,5 +1,5 @@
 import React from "react";
-import Preguntas from "../Components/Preguntas/Preguntas";
+import Preguntas from "./Preguntas/Preguntas";
 
 const SerSeguro = (props) => {
     console.log("aqui props", props);

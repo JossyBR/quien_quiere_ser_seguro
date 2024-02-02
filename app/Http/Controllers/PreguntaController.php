@@ -26,7 +26,7 @@ class PreguntaController extends Controller
         // dd($preguntaPrueba); // Verifica si se recupera correctamente
 
         //Para trabajar con REACT
-        return Inertia::render('SerSeguro', [
+        return Inertia::render('Preguntas/Preguntas', [
             'preguntaActual' => $preguntaActual ? $preguntaActual->toArray() : null,
             'indiceActual' => $indiceActual,
             'totalPreguntas' => $preguntas->count(),
@@ -43,7 +43,7 @@ class PreguntaController extends Controller
 
     // public function create()
     // {
-    //     return view('preguntas.create');
+    //     return redirect()->route('crear-preguntas');
     // }
 
 //     public function store (Request $request) 

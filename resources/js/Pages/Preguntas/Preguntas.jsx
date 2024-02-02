@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/inertia-react";
 
 const Preguntas = ({
     preguntaActual,
@@ -76,9 +77,8 @@ const Preguntas = ({
         }
 
         // Actualiza el puntaje si es necesario
-    //     // setPuntaje(data.puntaje);
+        //     // setPuntaje(data.puntaje);
     };
-
 
     const irASiguientePregunta = () => {
         const nuevoIndice = indiceActual + 1;
@@ -99,6 +99,9 @@ const Preguntas = ({
     return (
         <div>
             <h1>¿QUIEN QUIERE SER SEGURO?</h1>
+            <div>
+                <Link href="/crear-pregunta">Crear Preguntas</Link>
+            </div>
             <div id="temporizador">
                 Tiempo restante: {tiempoRestante} segundos
             </div>

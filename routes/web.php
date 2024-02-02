@@ -23,8 +23,8 @@ Route::get('/juego', [PreguntaController::class, 'index'])->name('juego');
 
 // Ruta para la creación de preguntas
 Route::get('/crear-pregunta', function (){
-    return Inertia::render('CrearPreguntar');
-})->name('preguntas.create');
+    return Inertia::render('Preguntas/CrearPreguntas');
+})->name('crear-preguntas');
 
 
 // Ruta para almacenar una nueva pregunta
