@@ -1,20 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "@inertiajs/inertia-react";
+import { Inertia } from "@inertiajs/inertia";
 
 const CrearPreguntas = () => {
+    const [form, setForm] = useState({
+        pregunta: "",
+        respuesta1: "",
+        respuesta2: "",
+        respuesta3: "",
+        respuesta4: "",
+        respuesta_correcta: "",
+    });
+
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        Inertia.post("/pregunta", form);
+    };
+
     return (
         <div>
-            <form action="">
+            <form onSubmit={handleSubmit}>
                 <div>
                     <div>
                         <Link href="/juego">Regresar</Link>
                     </div>
-                    <label for="pregunta">Escribe una pregunta</label>
+                    <label htmlFor="pregunta">Escribe una pregunta</label>
                     <input type="text" id="pregunta" name="pregunta" required />
                 </div>
 
                 <div>
-                    <label for="respuesta1">Respuesta 1</label>
+                    <label htmlFor="respuesta1">Respuesta 1</label>
                     <input
                         type="text"
                         id="respuesta1"
@@ -24,7 +43,7 @@ const CrearPreguntas = () => {
                     /{" "}
                 </div>
                 <div>
-                    <label for="respuesta2">Respuesta 2</label>
+                    <label htmlFor="respuesta2">Respuesta 2</label>
                     <input
                         type="text"
                         id="respuesta2"
@@ -33,7 +52,7 @@ const CrearPreguntas = () => {
                     />
                 </div>
                 <div>
-                    <label for="respuesta3">Respuesta 3</label>
+                    <label htmlFor="respuesta3">Respuesta 3</label>
                     <input
                         type="text"
                         id="respuesta3"
@@ -42,7 +61,7 @@ const CrearPreguntas = () => {
                     />
                 </div>
                 <div>
-                    <label for="respuesta4">Respuesta 4</label>
+                    <label htmlFor="respuesta4">Respuesta 4</label>
                     <input
                         type="text"
                         id="respuesta4"
@@ -51,7 +70,7 @@ const CrearPreguntas = () => {
                     />
                 </div>
                 <div>
-                    <label for="respuesta_correcta">
+                    <label htmlFor="respuesta_correcta">
                         Escribe la respuesta correcta
                     </label>
                     <input
