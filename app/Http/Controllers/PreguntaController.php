@@ -100,13 +100,13 @@ public function preguntaAnterior(Request $request, $indice)
     return redirect()->route('juego');
 }
 
-// public function reiniciarJuego(Request $request)
-// {
-//     $request->session()->forget('puntaje');
-//     $request->session()->forget('indiceActual');
+public function reiniciarJuego(Request $request)
+{
+    $request->session()->forget('puntaje');
+    $request->session()->forget('indiceActual');
 
-//     return redirect()->route('preguntas.index'); // O la ruta donde comienza tu juego
-// }
+    return redirect()->route('preguntas.index'); // O la ruta donde comienza tu juego
+}
 
 // public function ayudaCincuenta(Request $request, $id) {
 //     // Encuentra la pregunta específica por su ID. Si no existe, arroja un error 404.

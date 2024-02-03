@@ -19,30 +19,30 @@ const Preguntas = ({
     const [temporizador, setTemporizador] = useState(null);
     const [puntaje, setPuntaje] = useState(puntajeInicial);
 
-    // useEffect(() => {
-    //     // Iniciar el temporizador cuando el componente se monta
-    //     iniciarTemporizador();
-    // }, []);
+    useEffect(() => {
+        // Iniciar el temporizador cuando el componente se monta
+        iniciarTemporizador();
+    }, []);
 
-    // const iniciarTemporizador = () => {
-    //     if (!temporizador) {
-    //         const id = setInterval(() => {
-    //             setTiempoRestante((prevTiempo) => {
-    //                 if (prevTiempo <= 1) {
-    //                     clearInterval(id);
-    //                     return 0;
-    //                 }
-    //                 return prevTiempo - 1;
-    //             });
-    //         }, 1000);
-    //         setTemporizador(id);
-    //     }
-    // };
+    const iniciarTemporizador = () => {
+        if (!temporizador) {
+            const id = setInterval(() => {
+                setTiempoRestante((prevTiempo) => {
+                    if (prevTiempo <= 1) {
+                        clearInterval(id);
+                        return 0;
+                    }
+                    return prevTiempo - 1;
+                });
+            }, 1000);
+            setTemporizador(id);
+        }
+    };
 
-    // const detenerTemporizador = () => {
-    //     clearInterval(temporizador);
-    //     setTemporizador(null);
-    // };
+    const detenerTemporizador = () => {
+        clearInterval(temporizador);
+        setTemporizador(null);
+    };
 
     const verificarRespuesta = async (respuesta, index) => {
         // Obtener el token CSRF del documento
@@ -105,9 +105,10 @@ const Preguntas = ({
             <div id="temporizador">
                 Tiempo restante: {tiempoRestante} segundos
             </div>
-            <button>Iniciar Temporizador</button>
-            <button>Detener Temporizador</button>
-            {/* <button onClick={detenerTemporizador}>Detener Temporizador</button> */}
+            {/* <button>Iniciar Temporizador</button>
+            <button>Detener Temporizador</button> */}
+            <button onClick={iniciarTemporizador}>Iniciar Temporizador</button>
+            <button onClick={detenerTemporizador}>Detener Temporizador</button>
 
             <h2>{preguntaActual.pregunta}</h2>
             <div>
