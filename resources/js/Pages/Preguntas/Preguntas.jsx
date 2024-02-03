@@ -96,7 +96,30 @@ const Preguntas = ({
 
     const reiniciarJuego = () => {
         Inertia.get(`/reiniciar-juego`);
-    }
+    };
+
+    const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
+
+    const ayudaCincuenta = async () => {
+        // Asegúrate de que preguntaActual y preguntaActual.id están definidos
+        if (preguntaActual && preguntaActual.id) {
+            const response = await fetch(
+                `/ayuda-cincuenta/${preguntaActual.id}`,
+                {
+                    headers: {
+                        Accept: "application/json",
+                    },
+                }
+            );
+            if (response.ok) {
+                const data = await response.json();
+                // Actualiza el estado con las respuestas filtradas
+                setRespuestasFiltradas(data);
+            } else {
+                console.error("Error al obtener las respuestas filtradas");
+            }
+        }
+    };
 
     if (!preguntaActual) return <div>Cargando...</div>;
 
@@ -106,8 +129,8 @@ const Preguntas = ({
             <div>
                 <Link href="/crear-pregunta">Crear Preguntas</Link>
             </div>
-            <button onClick={reiniciarJuego}>Reiniciar juego</button>
-
+            <button onClick={reiniciarJuego}>Reiniciar juego</button> <br />
+            <button onClick={ayudaCincuenta}>50/50</button>
             <div id="temporizador">
                 Tiempo restante: {tiempoRestante} segundos
             </div>
@@ -115,9 +138,38 @@ const Preguntas = ({
             <button>Detener Temporizador</button> */}
             <button onClick={iniciarTemporizador}>Iniciar Temporizador</button>
             <button onClick={detenerTemporizador}>Detener Temporizador</button>
-
             <h2>{preguntaActual.pregunta}</h2>
             <div>
+                {respuestasFiltradas.length > 0
+                    ? respuestasFiltradas.map((respuesta, index) => (
+                          <button
+                              id={`respuesta-btn-${index}`}
+                              key={index}
+                              onClick={() =>
+                                  verificarRespuesta(respuesta, index)
+                              }
+                          >
+                              {respuesta}
+                          </button>
+                      ))
+                    : [
+                          preguntaActual.respuesta1,
+                          preguntaActual.respuesta2,
+                          preguntaActual.respuesta3,
+                          preguntaActual.respuesta4,
+                      ].map((respuesta, index) => (
+                          <button
+                              id={`respuesta-btn-${index}`}
+                              key={index}
+                              onClick={() =>
+                                  verificarRespuesta(respuesta, index)
+                              }
+                          >
+                              {respuesta}
+                          </button>
+                      ))}
+            </div>
+            {/* <div>
                 {[
                     preguntaActual.respuesta1,
                     preguntaActual.respuesta2,
@@ -132,8 +184,7 @@ const Preguntas = ({
                         {respuesta}
                     </button>
                 ))}
-            </div>
-
+            </div> */}
             <p>Puntaje actual: {puntaje}</p>
             <button onClick={irASiguientePregunta}>Continuar</button>
             <button onClick={irAPreguntaAnterior}>Anterior</button>

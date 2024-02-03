@@ -45,8 +45,6 @@ Route::get('/ayuda-cincuenta/{id}', [PreguntaController::class, 'ayudaCincuenta'
 
 
 
-
-
 //Para auth, por ahora no lo estoy utilizando
 Route::get('/', function () {
     return Inertia::render('Welcome', [

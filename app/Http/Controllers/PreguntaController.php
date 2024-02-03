@@ -108,28 +108,28 @@ public function reiniciarJuego(Request $request)
     return redirect()->route('juego'); // O la ruta donde comienza tu juego
 }
 
-// public function ayudaCincuenta(Request $request, $id) {
-//     // Encuentra la pregunta específica por su ID. Si no existe, arroja un error 404.
-//     $pregunta = Pregunta::findOrFail($id);
+public function ayudaCincuenta(Request $request, $id) {
+    // Encuentra la pregunta específica por su ID. Si no existe, arroja un error 404.
+    $pregunta = Pregunta::findOrFail($id);
 
-//     // Recolecta todas las respuestas posibles de la pregunta en un array.
-//     $respuestas = [$pregunta->respuesta1, $pregunta->respuesta2, $pregunta->respuesta3, $pregunta->respuesta4];
+    // Recolecta todas las respuestas posibles de la pregunta en un array.
+    $respuestas = [$pregunta->respuesta1, $pregunta->respuesta2, $pregunta->respuesta3, $pregunta->respuesta4];
 
-//     // Eliminar dos respuestas incorrectas // Filtra y recopila las respuestas incorrectas.
-//     $respuestasIncorrectas = array_filter($respuestas, function($respuesta) use ($pregunta) {
-//         return $respuesta != $pregunta->respuesta_correcta;
-//     });
+    // Eliminar dos respuestas incorrectas // Filtra y recopila las respuestas incorrectas.
+    $respuestasIncorrectas = array_filter($respuestas, function($respuesta) use ($pregunta) {
+        return $respuesta != $pregunta->respuesta_correcta;
+    });
 
-//     // Mezcla las respuestas incorrectas y selecciona las primeras dos. SHUFFLE=MEZCLA LAS RESPUESTA INCORRECTAS. ARRAY_SLICE TOMA LAS PRIMERAS DOS PARA SER ELIMINADAS
-//     shuffle($respuestasIncorrectas);
-//     $respuestasIncorrectas = array_slice($respuestasIncorrectas, 0, 2);
+    // Mezcla las respuestas incorrectas y selecciona las primeras dos. SHUFFLE=MEZCLA LAS RESPUESTA INCORRECTAS. ARRAY_SLICE TOMA LAS PRIMERAS DOS PARA SER ELIMINADAS
+    shuffle($respuestasIncorrectas);
+    $respuestasIncorrectas = array_slice($respuestasIncorrectas, 0, 2);
 
-//     // Calcula las respuestas que se deben mostrar (la correcta y una incorrecta). array_diff: Calcula cuáles respuestas deben permanecer visibles (la correcta y una incorrecta)
-//     $respuestasMostrar = array_diff($respuestas, $respuestasIncorrectas);
+    // Calcula las respuestas que se deben mostrar (la correcta y una incorrecta). array_diff: Calcula cuáles respuestas deben permanecer visibles (la correcta y una incorrecta)
+    $respuestasMostrar = array_diff($respuestas, $respuestasIncorrectas);
     
-//     // Devuelve las respuestas a mostrar como un array en formato JSON.
-//     return response()->json(array_values($respuestasMostrar));
-//     // return response()->json($respuestasMostrar);
-// }
+    // Devuelve las respuestas a mostrar como un array en formato JSON.
+    return response()->json(array_values($respuestasMostrar));
+    // return response()->json($respuestasMostrar);
+}
     
 }
