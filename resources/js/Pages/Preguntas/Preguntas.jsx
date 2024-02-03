@@ -94,6 +94,10 @@ const Preguntas = ({
         }
     };
 
+    const reiniciarJuego = () => {
+        Inertia.get(`/reiniciar-juego`);
+    }
+
     if (!preguntaActual) return <div>Cargando...</div>;
 
     return (
@@ -102,6 +106,8 @@ const Preguntas = ({
             <div>
                 <Link href="/crear-pregunta">Crear Preguntas</Link>
             </div>
+            <button onClick={reiniciarJuego}>Reiniciar juego</button>
+
             <div id="temporizador">
                 Tiempo restante: {tiempoRestante} segundos
             </div>

@@ -105,7 +105,7 @@ public function reiniciarJuego(Request $request)
     $request->session()->forget('puntaje');
     $request->session()->forget('indiceActual');
 
-    return redirect()->route('preguntas.index'); // O la ruta donde comienza tu juego
+    return redirect()->route('juego'); // O la ruta donde comienza tu juego
 }
 
 // public function ayudaCincuenta(Request $request, $id) {
