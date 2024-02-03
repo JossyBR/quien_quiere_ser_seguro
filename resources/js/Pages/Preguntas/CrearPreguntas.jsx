@@ -13,7 +13,8 @@ const CrearPreguntas = () => {
     });
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
     };
 
     const handleSubmit = (e) => {
@@ -29,7 +30,14 @@ const CrearPreguntas = () => {
                         <Link href="/juego">Regresar</Link>
                     </div>
                     <label htmlFor="pregunta">Escribe una pregunta</label>
-                    <input type="text" id="pregunta" name="pregunta" required />
+                    <input
+                        type="text"
+                        id="pregunta"
+                        name="pregunta"
+                        value={form.pregunta}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
 
                 <div>
@@ -38,6 +46,8 @@ const CrearPreguntas = () => {
                         type="text"
                         id="respuesta1"
                         name="respuesta1"
+                        value={form.respuesta1}
+                        onChange={handleChange}
                         required
                     />
                     /{" "}
@@ -48,6 +58,8 @@ const CrearPreguntas = () => {
                         type="text"
                         id="respuesta2"
                         name="respuesta2"
+                        value={form.respuesta2}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -57,6 +69,8 @@ const CrearPreguntas = () => {
                         type="text"
                         id="respuesta3"
                         name="respuesta3"
+                        value={form.respuesta3}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -66,6 +80,8 @@ const CrearPreguntas = () => {
                         type="text"
                         id="respuesta4"
                         name="respuesta4"
+                        value={form.respuesta4}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -77,6 +93,8 @@ const CrearPreguntas = () => {
                         type="text"
                         id="respuesta_correcta"
                         name="respuesta_correcta"
+                        value={form.respuesta_correcta}
+                        onChange={handleChange}
                         required
                     />
                 </div>

@@ -46,29 +46,33 @@ class PreguntaController extends Controller
     //     return redirect()->route('crear-preguntas');
     // }
 
-    // public function store (Request $request) 
-    // {
-    //     $request->validate([
-    //         'pregunta' => 'required',
-    //         'respuesta1' => 'required',
-    //         'respuesta2' => 'required',
-    //         'respuesta3' => 'required',
-    //         'respuesta4' => 'required',
-    //         'respuesta_correcta' => 'required',
-    //     ]);
+    public function store (Request $request) 
+    {
+        $data = $request->validate([
+            'pregunta' => 'required',
+            'respuesta1' => 'required',
+            'respuesta2' => 'required',
+            'respuesta3' => 'required',
+            'respuesta4' => 'required',
+            'respuesta_correcta' => 'required',
+        ]);
 
-    //     $preguntas = new Pregunta;
-    //     $preguntas->pregunta = $request->pregunta;
-    //     $preguntas->respuesta1 = $request->respuesta1;
-    //     $preguntas->respuesta2 = $request->respuesta2;
-    //     $preguntas->respuesta3 = $request->respuesta3;
-    //     $preguntas->respuesta4 = $request->respuesta4;
-    //     $preguntas->respuesta_correcta = $request->respuesta_correcta;
+        Pregunta::create($data);
 
-    //     $preguntas->save();
+        return redirect()->route('juego')->with('status', 'Solicitud creada exitosamente!');
 
-    //     return redirect()->route('juego')->with('status', 'Solicitud creada exitosamente!');
-    // }
+        // $preguntas = new Pregunta;
+        // $preguntas->pregunta = $request->pregunta;
+        // $preguntas->respuesta1 = $request->respuesta1;
+        // $preguntas->respuesta2 = $request->respuesta2;
+        // $preguntas->respuesta3 = $request->respuesta3;
+        // $preguntas->respuesta4 = $request->respuesta4;
+        // $preguntas->respuesta_correcta = $request->respuesta_correcta;
+
+        // $preguntas->save();
+
+        
+    }
 
 
     public function verificarRespuesta(Request $request, $id) {
