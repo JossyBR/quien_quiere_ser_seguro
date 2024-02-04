@@ -126,8 +126,12 @@ const Preguntas = ({
     return (
         <div>
             <h1>¿QUIEN QUIERE SER SEGURO?</h1>
+            
             <div>
-                <Link href="/crear-pregunta">Crear Preguntas</Link>
+                <Link rel="stylesheet" href="/admin/preguntas">
+                    {" "}
+                    Ver preguntas{" "}
+                </Link>
             </div>
             <button onClick={reiniciarJuego}>Reiniciar juego</button> <br />
             <button onClick={ayudaCincuenta}>50/50</button>

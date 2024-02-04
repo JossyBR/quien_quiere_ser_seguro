@@ -30,6 +30,18 @@ Route::get('/crear-pregunta', function (){
 // Ruta para almacenar una nueva pregunta
 Route::post('/pregunta', [PreguntaController::class, 'store'])->name('pregunta.store');
 
+//Ruta para ver todas las preguntas
+Route::get('/admin/preguntas', [PreguntaController::class, 'adminIndex'])->name('preguntas.adminIndex');
+
+//Rutas para editar preguntas
+Route::get('/admin/preguntas/editar/{id}', [PreguntaController::class, 'edit'])->name('preguntas.edit');
+Route::post('/admin/preguntas/editar/{id}', [PreguntaController::class, 'update'])->name('preguntas.update');
+
+//Rutas para eliminar ppreguntas
+Route::get('/admin/preguntas/delete/{id}', [PreguntaController::class, 'confirmDelete'])->name('preguntas.delete');
+Route::delete('/admin/preguntas/{id}', [PreguntaController::class, 'destroy'])->name('preguntas.destroy');
+
+
 // Ruta para verificar una respuesta
 Route::post('/verificar-respuesta/{id}', [PreguntaController::class, 'verificarRespuesta'])->name('verificar_respuesta');
 

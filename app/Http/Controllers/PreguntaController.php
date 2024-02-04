@@ -8,6 +8,7 @@ use Inertia\Inertia;
 
 class PreguntaController extends Controller
 {
+    //Aqui se muestran las preguntas una por una
     public function index(Request $request)
     {
         // $preguntas = Pregunta::all();
@@ -41,6 +42,15 @@ class PreguntaController extends Controller
     // ]);
     }
 
+    //Aqui se administran todas las preguntas para que el usuario pueda editar o eliminar las preguntas
+    public function adminIndex()
+{
+    $preguntas = Pregunta::all(); // Obtiene todas las preguntas
+    return Inertia::render('Preguntas/AdminPreguntas', [
+        'preguntas' => $preguntas
+    ]);
+}
+
     // public function create()
     // {
     //     return redirect()->route('crear-preguntas');
@@ -69,11 +79,50 @@ class PreguntaController extends Controller
         // $preguntas->respuesta4 = $request->respuesta4;
         // $preguntas->respuesta_correcta = $request->respuesta_correcta;
 
-        // $preguntas->save();
-
-        
+        // $preguntas->save();      
     }
+    public function edit($id)
+{
+    $pregunta = Pregunta::findOrFail($id);
+    return Inertia::render('Preguntas/EditPreguntas', ['preguntaActual' => $pregunta]); // Aquí estás usando 'preguntaActual'
+}
 
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'pregunta' => 'required',
+        'respuesta1'=> 'required',
+        'respuesta2'=> 'required',
+        'respuesta3'=> 'required',
+        'respuesta4'=> 'required',
+        'respuesta_correcta' => 'required'
+    ]);
+
+    $pregunta = Pregunta::findOrFail($id);
+    $pregunta->update([
+        'pregunta' => $request->pregunta,
+        'respuesta1' => $request->respuesta1,
+        'respuesta2' => $request->respuesta2,
+        'respuesta3' => $request->respuesta3,
+        'respuesta4' => $request->respuesta4,
+        'respuesta_correcta' => $request-> respuesta_correcta
+    ]);
+
+    return redirect()->route('preguntas.adminIndex')->with('message', 'Pregunta actualizada.');
+}
+
+public function confirmDelete($id)
+{
+    $pregunta = Pregunta::findOrFail($id);
+    return Inertia::render('Preguntas/DeletePreguntas', ['Id' => $pregunta->id]);
+}
+
+public function destroy($id)
+{
+    $pregunta = Pregunta::findOrFail($id);
+    $pregunta->delete();
+    return redirect()->route('preguntas.adminIndex')->with('message', 'Pregunta eliminada.');
+}
 
     public function verificarRespuesta(Request $request, $id) {
         $pregunta = Pregunta::findOrFail($id); //Encuentra la pregunta por su ID. Si no existe, arroja un error 404.
@@ -135,5 +184,7 @@ public function ayudaCincuenta(Request $request, $id) {
     return response()->json(array_values($respuestasMostrar));
     // return response()->json($respuestasMostrar);
 }
+
+
     
 }

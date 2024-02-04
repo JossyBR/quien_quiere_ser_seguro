@@ -27,7 +27,7 @@ const CrearPreguntas = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <div>
-                        <Link href="/juego">Regresar</Link>
+                        <Link href="/admin/preguntas">Regresar</Link>
                     </div>
                     <label htmlFor="pregunta">Escribe una pregunta</label>
                     <input
@@ -87,16 +87,46 @@ const CrearPreguntas = () => {
                 </div>
                 <div>
                     <label htmlFor="respuesta_correcta">
-                        Escribe la respuesta correcta
+                        Escoja la respuesta correcta
                     </label>
-                    <input
+                    <select
+                        id="respuesta_correcta"
+                        name="respuesta_correcta"
+                        value={form.respuesta_correcta}
+                        onChange={handleChange}
+                        required
+                    >
+                        {/* Asegúrate de que las opciones estén disponibles solo si la respuesta correspondiente no está vacía */}
+                        <option>Seleccione</option>
+                        {form.respuesta1 && (
+                            <option value={form.respuesta1}>
+                                {form.respuesta1}
+                            </option>
+                        )}
+                        {form.respuesta2 && (
+                            <option value={form.respuesta2}>
+                                {form.respuesta2}
+                            </option>
+                        )}
+                        {form.respuesta3 && (
+                            <option value={form.respuesta3}>
+                                {form.respuesta3}
+                            </option>
+                        )}
+                        {form.respuesta4 && (
+                            <option value={form.respuesta4}>
+                                {form.respuesta4}
+                            </option>
+                        )}
+                    </select>
+                    {/* <input
                         type="text"
                         id="respuesta_correcta"
                         name="respuesta_correcta"
                         value={form.respuesta_correcta}
                         onChange={handleChange}
                         required
-                    />
+                    /> */}
                 </div>
 
                 <button type="submit">Crear pregunta</button>
