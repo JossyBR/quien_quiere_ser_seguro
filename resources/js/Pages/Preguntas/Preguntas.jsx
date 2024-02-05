@@ -6,23 +6,18 @@ const Preguntas = ({
     preguntaActual,
     indiceActual,
     totalPreguntas,
-    puntajeInicial,
+    puntaje,
 }) => {
-    console.log(
-        "AQUI",
-        preguntaActual,
-        indiceActual,
-        totalPreguntas,
-        puntajeInicial
-    );
+    console.log("AQUI", preguntaActual, indiceActual, totalPreguntas, puntaje);
     const [tiempoRestante, setTiempoRestante] = useState(30);
     const [temporizador, setTemporizador] = useState(null);
-    const [puntaje, setPuntaje] = useState(puntajeInicial);
+    const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
 
     useEffect(() => {
         // Iniciar el temporizador cuando el componente se monta
         iniciarTemporizador();
-    }, []);
+        setPuntajeLocal(puntaje);
+    }, [puntaje]);
 
     const iniciarTemporizador = () => {
         if (!temporizador) {
@@ -77,7 +72,7 @@ const Preguntas = ({
         }
 
         // Actualiza el puntaje si es necesario
-        //     // setPuntaje(data.puntaje);
+        setPuntajeLocal(data.puntaje);
     };
 
     const irASiguientePregunta = () => {
@@ -126,7 +121,6 @@ const Preguntas = ({
     return (
         <div>
             <h1>¿QUIEN QUIERE SER SEGURO?</h1>
-            
             <div>
                 <Link rel="stylesheet" href="/admin/preguntas">
                     {" "}
@@ -138,8 +132,6 @@ const Preguntas = ({
             <div id="temporizador">
                 Tiempo restante: {tiempoRestante} segundos
             </div>
-            {/* <button>Iniciar Temporizador</button>
-            <button>Detener Temporizador</button> */}
             <button onClick={iniciarTemporizador}>Iniciar Temporizador</button>
             <button onClick={detenerTemporizador}>Detener Temporizador</button>
             <h2>{preguntaActual.pregunta}</h2>
@@ -189,7 +181,7 @@ const Preguntas = ({
                     </button>
                 ))}
             </div> */}
-            <p>Puntaje actual: {puntaje}</p>
+            <p>Puntaje actual: {puntajeLocal}</p>
             <button onClick={irASiguientePregunta}>Continuar</button>
             <button onClick={irAPreguntaAnterior}>Anterior</button>
         </div>
