@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
+import styles from "../../../css/styles.module.css";
 
 const Preguntas = ({
     preguntaActual,
@@ -119,28 +120,52 @@ const Preguntas = ({
     if (!preguntaActual) return <div>Cargando...</div>;
 
     return (
-        <div>
-            <h1>¿QUIEN QUIERE SER SEGURO?</h1>
-            <div>
-                <Link rel="stylesheet" href="/admin/preguntas">
+        <div className="bg-[#010326] opacity-[0.9] text-white min-h-screen p-8">
+            <h1 className="text-4xl font-bold mb-4">
+                ¿QUIEN QUIERE SER SEGURO?
+            </h1>
+            <div className="mb-4">
+                <Link
+                    className="underline text-blue-300"
+                    rel="stylesheet"
+                    href="/admin/preguntas"
+                >
                     {" "}
                     Ver preguntas{" "}
                 </Link>
             </div>
-            <button onClick={reiniciarJuego}>Reiniciar juego</button> <br />
-            <button onClick={ayudaCincuenta}>50/50</button>
-            <div id="temporizador">
-                Tiempo restante: {tiempoRestante} segundos
+            <button
+                onClick={reiniciarJuego}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+            >
+                Reiniciar juego
+            </button>{" "}
+            <br />
+            <button
+                onClick={ayudaCincuenta}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+            >
+                50/50
+            </button>
+            <div id="temporizador" className="mt-4 mb-4 text-2xl">
+                Tiempo restante:{" "}
+                <span className="font-bold">{tiempoRestante}</span> segundos
             </div>
             <button onClick={iniciarTemporizador}>Iniciar Temporizador</button>
             <button onClick={detenerTemporizador}>Detener Temporizador</button>
-            <h2>{preguntaActual.pregunta}</h2>
-            <div>
+            <div className={styles.div}>hola soy de prueba</div>
+            <div className={styles.hexagon}>
+                <h2 className="text-3xl font-bold mb-4">
+                    {preguntaActual.pregunta}
+                </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border">
                 {respuestasFiltradas.length > 0
                     ? respuestasFiltradas.map((respuesta, index) => (
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border"
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
@@ -157,6 +182,7 @@ const Preguntas = ({
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
@@ -165,25 +191,30 @@ const Preguntas = ({
                           </button>
                       ))}
             </div>
-            {/* <div>
-                {[
-                    preguntaActual.respuesta1,
-                    preguntaActual.respuesta2,
-                    preguntaActual.respuesta3,
-                    preguntaActual.respuesta4,
-                ].map((respuesta, index) => (
+            <p className="text-xl">
+                Puntaje actual:{" "}
+                <span className="font-bold">{puntajeLocal}</span>
+            </p>
+            <div>
+                {/* Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0 */}
+                {indiceActual < totalPreguntas - 1 && (
                     <button
-                        id={`respuesta-btn-${index}`} // Asigna un ID único a cada botón
-                        key={index}
-                        onClick={() => verificarRespuesta(respuesta, index)} // Pasa el index a verificarRespuesta
+                        onClick={irASiguientePregunta}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
                     >
-                        {respuesta}
+                        Continuar
                     </button>
-                ))}
-            </div> */}
-            <p>Puntaje actual: {puntajeLocal}</p>
-            <button onClick={irASiguientePregunta}>Continuar</button>
-            <button onClick={irAPreguntaAnterior}>Anterior</button>
+                )}
+                {/* Verfifica si no se esta en la primera pregunta, si indiceactual es mayor que cero */}
+                {indiceActual > 0 && (
+                    <button
+                        onClick={irAPreguntaAnterior}
+                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Anterior
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

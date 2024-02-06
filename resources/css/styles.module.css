@@ -1,0 +1,36 @@
+.div {
+    border: 1px solid red;
+    height: 50px;
+    /* border-bottom-left-radius: 12px; */
+    /* border-start-start-radius: 12px; */
+    border-top-left-radius: 90px;
+    border-bottom-left-radius: 90px;
+}
+
+.hexagon {
+    width: 100px;
+    height: 57.74px; /* Altura es aproximadamente el 57.74% del ancho para un hexágono regular */
+    background-color: #64c7cc; /* Color de tu elección */
+    position: relative;
+    margin: 29px 0; /* Ajuste basado en la altura para alinear verticalmente */
+}
+
+.hexagon::before,
+.hexagon::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    border-left: 50px solid transparent; /* Mitad del ancho del hexágono */
+    border-right: 50px solid transparent; /* Mitad del ancho del hexágono */
+    z-index: 1;
+}
+
+.hexagon::before {
+    bottom: 100%;
+    border-bottom: 29.87px solid #64c7cc; /* Ajustar el color para coincidir con el hexágono. La altura es aproximadamente 29.87% del ancho */
+}
+
+.hexagon::after {
+    top: 100%;
+    border-top: 29.87px solid #64c7cc; /* Ajustar el color para coincidir con el hexágono */
+}
