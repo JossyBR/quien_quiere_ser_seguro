@@ -6,13 +6,13 @@
     border-top-left-radius: 90px;
     border-bottom-left-radius: 90px;
 }
-
 .hexagon {
-    width: 100px;
-    height: 57.74px; /* Altura es aproximadamente el 57.74% del ancho para un hexágono regular */
-    background-color: #64c7cc; /* Color de tu elección */
+    width: 300px; /* Ancho del hexágono */
+    height: 40px; /* Altura del centro del hexágono */
+    /* background-color: #3498db; Color de fondo del hexágono */
     position: relative;
-    margin: 29px 0; /* Ajuste basado en la altura para alinear verticalmente */
+    margin: 20px 0; /* Espaciado para visualización */
+    border: 3px solid #b17821;
 }
 
 .hexagon::before,
@@ -20,17 +20,28 @@
     content: "";
     position: absolute;
     width: 0;
-    border-left: 50px solid transparent; /* Mitad del ancho del hexágono */
-    border-right: 50px solid transparent; /* Mitad del ancho del hexágono */
-    z-index: 1;
+    border-left: 130px solid transparent; /* La mitad del ancho del hexágono */
+    border-right: 130px solid transparent; /* La mitad del ancho del hexágono */
+    height: 0;
 }
 
 .hexagon::before {
-    bottom: 100%;
-    border-bottom: 29.87px solid #64c7cc; /* Ajustar el color para coincidir con el hexágono. La altura es aproximadamente 29.87% del ancho */
+    bottom: 100%; /* Alinea la parte superior del triángulo con el borde superior del hexágono */
+    border-bottom: 10px solid #b17821; /* Altura del triángulo superior */
+    text-align: center;
 }
 
 .hexagon::after {
-    top: 100%;
-    border-top: 29.87px solid #64c7cc; /* Ajustar el color para coincidir con el hexágono */
+    top: 100%; /* Alinea la parte inferior del triángulo con el borde inferior del hexágono */
+    border-top: 10px solid #b17821; /* Altura del triángulo inferior */
 }
+
+/* .hexagon: Define el contenedor principal del hexágono, donde width y height determinan el ancho y la altura central del hexágono, respectivamente. El background-color es el color del hexágono.
+
+.hexagon::before y .hexagon::after: Son pseudoelementos utilizados para crear los triángulos en la parte superior e inferior del hexágono. Estos elementos son esenciales para formar la forma hexagonal completa.
+
+border-left y border-right: Crean los lados inclinados del triángulo mediante el uso de bordes transparentes. El tamaño de estos bordes determina qué tan inclinados estarán los lados del hexágono.
+
+border-bottom en ::before y border-top en ::after: Estos son los que realmente pintan el triángulo superior e inferior, respectivamente, usando el mismo color de fondo que el contenedor principal. El tamaño de estos bordes afecta la altura de los triángulos, ajustando así la proporción vertical del hexágono.
+
+Para ajustar la longitud del hexágono en los lados derecho e izquierdo, puedes modificar el width del .hexagon y los valores border-left y border-right en los pseudoelementos ::before y ::after para mantener la simetría. Ajustar estos valores te permitirá crear un hexágono que se adapte a tus necesidades específicas de diseño */
