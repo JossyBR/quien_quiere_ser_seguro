@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
 import styles from "../../../css/styles.module.css";
+import { BsHourglassSplit } from "react-icons/bs";
+import {
+    FaRegPlayCircle,
+    FaRegStopCircle,
+    FaRedoAlt,
+    FaEye,
+} from "react-icons/fa";
 
 const Preguntas = ({
     preguntaActual,
@@ -124,26 +131,27 @@ const Preguntas = ({
             <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                 ¿QUIEN QUIERE SER SEGURO?
             </h1>
-            <div className="mb-4">
-                <Link
-                    className="underline text-blue-300"
-                    rel="stylesheet"
-                    href="/admin/preguntas"
-                >
-                    {" "}
-                    Ver preguntas{" "}
-                </Link>
-            </div>
-            <div className="border flex justify-between">
+            <div className="mb-4 flex justify-between items-center">
+                <div>
+                    <Link
+                        className="flex items-center gap-1 font-bold"
+                        rel="stylesheet"
+                        href="/admin/preguntas"
+                    >
+                        {" "}
+                        <FaEye className="h-4 w-4" /> Preguntas{" "}
+                    </Link>
+                </div>
                 <div>
                     <button
                         onClick={reiniciarJuego}
                         className=" text-white font-bold py-2 px-4 rounded mr-2"
                     >
-                        Reiniciar juego
+                        <FaRedoAlt className="h-5 w-5" />
                     </button>
                 </div>
-
+            </div>
+            <div className="border flex justify-between">
                 <div>
                     <button
                         onClick={ayudaCincuenta}
@@ -154,23 +162,30 @@ const Preguntas = ({
                 </div>
             </div>{" "}
             <br />
-            <div className="border-2">
-                <div
-                    id="temporizador"
-                    className="text-base text-center lg:text-2xl"
-                >
-                    Tiempo restante:{" "}
-                    <span className="font-bold">{tiempoRestante}</span> segundos
-                </div>
-                <div className="flex justify-center gap-2 ">
-                    <button onClick={iniciarTemporizador}>Iniciar</button>
-                    <button onClick={detenerTemporizador}>Detener</button>
-                </div>
-            </div>
             <div className="border mt-2">
                 <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                     ¿LOGO?
                 </h1>
+            </div>
+            <div className="border flex items-center">
+                <div
+                    id="temporizador"
+                    className="flex justify-center gap-2 items-center text-base text-center mb-2 lg:text-2xl"
+                >
+                    <BsHourglassSplit className="h-6 w-6 md:h-10 md:w-10" />
+                    <div className="flex gap-1">
+                        <span className="font-bold ">{tiempoRestante} </span>{" "}
+                        <p>Segundos</p>
+                    </div>
+                </div>
+                <div className="flex justify-center gap-2 ml-2">
+                    <button onClick={iniciarTemporizador}>
+                        <FaRegPlayCircle className="h-6 w-6" />
+                    </button>
+                    <button onClick={detenerTemporizador}>
+                        <FaRegStopCircle className="h-6 w-6" />
+                    </button>
+                </div>
             </div>
             <p className="text-base">
                 Puntaje actual:{" "}
