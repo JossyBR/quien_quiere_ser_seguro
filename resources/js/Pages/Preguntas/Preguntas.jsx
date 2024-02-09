@@ -120,7 +120,7 @@ const Preguntas = ({
     if (!preguntaActual) return <div>Cargando...</div>;
 
     return (
-        <div className="bg-[#0A2342] text-white min-h-screen p-8">
+        <div className={`${styles.contenedor} text-white min-h-screen p-8`}>
             <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                 ¿QUIEN QUIERE SER SEGURO?
             </h1>
@@ -157,7 +157,7 @@ const Preguntas = ({
             <div className="border-2">
                 <div
                     id="temporizador"
-                    className="text-base text-center mb-4 lg:text-2xl"
+                    className="text-base text-center lg:text-2xl"
                 >
                     Tiempo restante:{" "}
                     <span className="font-bold">{tiempoRestante}</span> segundos
@@ -167,21 +167,23 @@ const Preguntas = ({
                     <button onClick={detenerTemporizador}>Detener</button>
                 </div>
             </div>
-            <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
-                ¿LOGO?
-            </h1>
+            <div className="border mt-2">
+                <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
+                    ¿LOGO?
+                </h1>
+            </div>
             <p className="text-base">
                 Puntaje actual:{" "}
                 <span className="font-bold">{puntajeLocal}</span>
             </p>
-            <div className="flex justify-center">
+            <div className={`${styles.hexagonwrapper} flex justify-center`}>
                 <div className={styles.hexagon}>
                     <h2 className="text-lg font-bold mb-4 text-center">
                         {preguntaActual.pregunta}
                     </h2>
                 </div>
             </div>
-            <div className={`flex flex-col border-2 border-black`}>
+            <div className={`flex flex-col items-center border-2 border-black`}>
                 {respuestasFiltradas.length > 0
                     ? respuestasFiltradas.map((respuesta, index) => (
                           <button
@@ -204,7 +206,7 @@ const Preguntas = ({
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
-                              className={`border-2 ${styles.hexagon}`}
+                              className={`${styles.respuestas}`}
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
