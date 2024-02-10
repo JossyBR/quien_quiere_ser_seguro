@@ -11,10 +11,11 @@
     height: 40px; /* Altura del centro del hexágono */
     position: relative;
     margin: 20px 0; /* Espaciado para visualización */
-    border: 4px solid transparent;
-    -webkit-border-image: -webkit-linear-gradient(top, #fef8d4, #b8915a) 1
+    border: 2px solid #fff;
+    border-radius: 5px;
+    /* -webkit-border-image: -webkit-linear-gradient(top, #fef8d4, #b8915a) 1
         stretch;
-    border-image: linear-gradient(to bottom, #fef8d4, #b8915a) 1 stretch;
+    border-image: linear-gradient(to bottom, #fef8d4, #b8915a) 1 stretch; */
 }
 
 .hexagon::before,
@@ -24,19 +25,21 @@
     width: 0;
     border-left: 130px solid transparent; /* La mitad del ancho del hexágono */
     border-right: 130px solid transparent; /* La mitad del ancho del hexágono */
+    border-radius: 15px;
     height: 0;
 }
 
 .hexagon::before {
     bottom: 100%; /* Alinea la parte superior del triángulo con el borde superior del hexágono */
-    border-bottom: 10px solid #b8915a; /* Altura del triángulo superior */
+    border-bottom: 10px solid #fff; /* Altura del triángulo superior */
+    border-radius: 10px;
 
     text-align: center;
 }
 
 .hexagon::after {
     top: 100%; /* Alinea la parte inferior del triángulo con el borde inferior del hexágono */
-    border-top: 10px solid #b8915a; /* Altura del triángulo inferior */
+    border-top: 10px solid #fff; /* Altura del triángulo inferior */
 }
 
 /* Para las respuestas */
@@ -46,10 +49,10 @@
     height: 40px; /* Altura del centro del hexágono */
     position: relative;
     margin: 20px auto; /* Centra el hexágono horizontalmente y añade espaciado vertical */
-    border: 3px solid transparent; /* Borde del centro del hexágono */
-    -webkit-border-image: -webkit-linear-gradient(top, #fef8d4, #b8915a) 1
+    border: 2px solid #fff; /* Borde del centro del hexágono */
+    /* -webkit-border-image: -webkit-linear-gradient(top, #fef8d4, #b8915a) 1
         stretch;
-    border-image: linear-gradient(to bottom, #fef8d4, #b8915a) 1 stretch;
+    border-image: linear-gradient(to bottom, #fef8d4, #b8915a) 1 stretch; */
 }
 
 .respuestas::before,
@@ -67,12 +70,12 @@
 
 .respuestas::before {
     bottom: 100%; /* Posiciona el triángulo superior justo arriba del centro */
-    border-bottom: 10px solid #b8915a; /* Altura y color del triángulo superior */
+    border-bottom: 10px solid #fff; /* Altura y color del triángulo superior */
 }
 
 .respuestas::after {
     top: 100%; /* Posiciona el triángulo inferior justo debajo del centro */
-    border-top: 10px solid #b8915a; /* Altura y color del triángulo inferior */
+    border-top: 10px solid #fff; /* Altura y color del triángulo inferior */
 }
 
 /* .hexagon: Define el contenedor principal del hexágono, donde width y height determinan el ancho y la altura central del hexágono, respectivamente. El background-color es el color del hexágono.

@@ -9,6 +9,7 @@ import {
     FaRedoAlt,
     FaEye,
 } from "react-icons/fa";
+import { MdSportsScore } from "react-icons/md";
 
 const Preguntas = ({
     preguntaActual,
@@ -151,14 +152,36 @@ const Preguntas = ({
                     </button>
                 </div>
             </div>
-            <div className="border flex justify-between">
+            <div className=" flex items-center justify-between">
                 <div>
                     <button
                         onClick={ayudaCincuenta}
-                        className="border-2 rounded-full text-white font-bold p-2 "
+                        className="border-2 rounded-full text-white font-bold px-2 "
                     >
                         50/50
                     </button>
+                </div>
+
+                <div
+                    id="temporizador"
+                    className="flex flex-col justify-center gap-2 items-center text-base text-center mb-2 lg:text-2xl"
+                >
+                    <div className="flex items-center gap-1">
+                        <BsHourglassSplit className="h-4 w-4 md:h-10 md:w-10" />
+                        <span className="font-bold ">
+                            {tiempoRestante}{" "}
+                        </span>{" "}
+                        <p>Seg</p>
+                    </div>
+
+                    <div className="flex justify-center gap-2 ml-2">
+                        <button onClick={iniciarTemporizador}>
+                            <FaRegPlayCircle className="h-4 w-4" />
+                        </button>
+                        <button onClick={detenerTemporizador}>
+                            <FaRegStopCircle className="h-5 w-5" />
+                        </button>
+                    </div>
                 </div>
             </div>{" "}
             <br />
@@ -168,29 +191,16 @@ const Preguntas = ({
                 </h1>
             </div>
             <div className="border flex items-center">
-                <div
-                    id="temporizador"
-                    className="flex justify-center gap-2 items-center text-base text-center mb-2 lg:text-2xl"
-                >
-                    <BsHourglassSplit className="h-6 w-6 md:h-10 md:w-10" />
-                    <div className="flex gap-1">
-                        <span className="font-bold ">{tiempoRestante} </span>{" "}
-                        <p>Segundos</p>
-                    </div>
-                </div>
-                <div className="flex justify-center gap-2 ml-2">
-                    <button onClick={iniciarTemporizador}>
-                        <FaRegPlayCircle className="h-6 w-6" />
-                    </button>
-                    <button onClick={detenerTemporizador}>
-                        <FaRegStopCircle className="h-6 w-6" />
-                    </button>
-                </div>
+                {/* //temporizador */}
             </div>
-            <p className="text-base">
-                Puntaje actual:{" "}
-                <span className="font-bold">{puntajeLocal}</span>
-            </p>
+            <div className="flex gap-1 mt-4">
+                <MdSportsScore className="h-7 w-7" />
+                <p className="text-base">
+                    {/* Puntaje actual:{" "} */}
+
+                    <span className="font-bold text-lg">{puntajeLocal}</span>
+                </p>
+            </div>
             <div className={`${styles.hexagonwrapper} flex justify-center`}>
                 <div className={styles.hexagon}>
                     <h2 className="text-lg font-bold mb-4 text-center">
@@ -198,7 +208,7 @@ const Preguntas = ({
                     </h2>
                 </div>
             </div>
-            <div className={`flex flex-col items-center border-2 border-black`}>
+            <div className={`flex flex-col items-center `}>
                 {respuestasFiltradas.length > 0
                     ? respuestasFiltradas.map((respuesta, index) => (
                           <button
@@ -235,7 +245,7 @@ const Preguntas = ({
                 {indiceActual < totalPreguntas - 1 && (
                     <button
                         onClick={irASiguientePregunta}
-                        className="border text-white font-bold py-2 px-4 rounded mr-2"
+                        className="border-2  text-white font-bold h-10 px-4 rounded-xl mr-2 hover:scale-105"
                     >
                         Continuar
                     </button>
@@ -244,7 +254,7 @@ const Preguntas = ({
                 {indiceActual > 0 && (
                     <button
                         onClick={irAPreguntaAnterior}
-                        className="border text-white font-bold py-2 px-4 rounded"
+                        className="border-2 text-white font-bold h-10 px-4  rounded-xl"
                     >
                         Anterior
                     </button>
