@@ -10,6 +10,11 @@ import {
     FaEye,
 } from "react-icons/fa";
 import { MdSportsScore } from "react-icons/md";
+import {
+    NIVEL_INICIAL,
+    obtenerNuevoNivel,
+    debeSubirDeNivel,
+} from "@/Utils/preguntasUtils";
 
 const Preguntas = ({
     preguntaActual,
@@ -21,6 +26,8 @@ const Preguntas = ({
     const [tiempoRestante, setTiempoRestante] = useState(30);
     const [temporizador, setTemporizador] = useState(null);
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
+    const [nivelActual, setNivelActual] = useState(NIVEL_INICIAL);
+    const [aciertosConsecutivos, setAciertosConsecutivos] = useState(0);
 
     useEffect(() => {
         // Iniciar el temporizador cuando el componente se monta
@@ -71,13 +78,22 @@ const Preguntas = ({
 
         // Lógica para cambiar el color del botón según la respuesta
         if (data.correcta) {
-            document.getElementById(
-                `respuesta-btn-${index}`
-            ).style.backgroundColor = "green";
+            // Si la respuesta es correcta, incrementar aciertos consecutivos
+            const nuevosAciertos = aciertosConsecutivos + 1;
+            setAciertosConsecutivos(nuevosAciertos);
+
+            // Verificar si debe subir de nivel
+            if (debeSubirDeNivel(nuevosAciertos)) {
+                const nuevoNivel = obtenerNuevoNivel(
+                    nivelActual,
+                    nuevosAciertos
+                );
+                setNivelActual(nuevoNivel);
+                setAciertosConsecutivos(0); // Resetear contador de aciertos consecutivos
+            }
         } else {
-            document.getElementById(
-                `respuesta-btn-${index}`
-            ).style.backgroundColor = "red";
+            // Si la respuesta es incorrecta, resetear aciertos consecutivos
+            setAciertosConsecutivos(0);
         }
 
         // Actualiza el puntaje si es necesario
@@ -185,6 +201,9 @@ const Preguntas = ({
                 </div>
             </div>{" "}
             <br />
+            <div className="nivel-actual">
+                <h2>Nivel Actual: {nivelActual}</h2>
+            </div>
             <div className="border mt-2">
                 <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                     ¿LOGO?

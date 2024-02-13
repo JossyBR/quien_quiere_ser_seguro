@@ -1,92 +1,113 @@
-import { Inertia } from "@inertiajs/inertia";
+// import { Inertia } from "@inertiajs/inertia";
 
-export const iniciarTemporizador = () => {
-    if (!temporizador) {
-        const id = setInterval(() => {
-            setTiempoRestante((prevTiempo) => {
-                if (prevTiempo <= 1) {
-                    clearInterval(id);
-                    return 0;
-                }
-                return prevTiempo - 1;
-            });
-        }, 1000);
-        setTemporizador(id);
+//Para manejar los niveles
+
+export const NIVEL_INICIAL = 1;
+export const MAX_NIVELES = 3;
+export const ACIERTOS_PARA_SUBIR_NIVEL = 3;
+
+// Función para determinar si el jugador debe subir de nivel
+export const debeSubirDeNivel = (aciertosConsecutivos) => {
+    return aciertosConsecutivos >= ACIERTOS_PARA_SUBIR_NIVEL;
+};
+
+// Función para obtener el nuevo nivel, si es aplicable
+export const obtenerNuevoNivel = (nivelActual, aciertosConsecutivos) => {
+    if (debeSubirDeNivel(aciertosConsecutivos)) {
+        const nuevoNivel = nivelActual + 1;
+        return nuevoNivel > MAX_NIVELES ? MAX_NIVELES : nuevoNivel;
     }
+    return nivelActual;
 };
 
-export const detenerTemporizador = () => {
-    clearInterval(temporizador);
-    setTemporizador(null);
-};
 
-export const verificarRespuesta = async (respuesta, index) => {
-    // Obtener el token CSRF del documento
-    const csrfToken = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
+// export const iniciarTemporizador = () => {
+//     if (!temporizador) {
+//         const id = setInterval(() => {
+//             setTiempoRestante((prevTiempo) => {
+//                 if (prevTiempo <= 1) {
+//                     clearInterval(id);
+//                     return 0;
+//                 }
+//                 return prevTiempo - 1;
+//             });
+//         }, 1000);
+//         setTemporizador(id);
+//     }
+// };
 
-    const response = await fetch(`/verificar-respuesta/${preguntaActual.id}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            // Usa la variable csrfToken para enviar el token CSRF
-            "X-CSRF-TOKEN": csrfToken,
-        },
-        body: JSON.stringify({ respuesta }),
-    });
+// export const detenerTemporizador = () => {
+//     clearInterval(temporizador);
+//     setTemporizador(null);
+// };
 
-    const data = await response.json();
+// export const verificarRespuesta = async (respuesta, index) => {
+//     // Obtener el token CSRF del documento
+//     const csrfToken = document
+//         .querySelector('meta[name="csrf-token"]')
+//         .getAttribute("content");
 
-    // Lógica para cambiar el color del botón según la respuesta
-    if (data.correcta) {
-        document.getElementById(
-            `respuesta-btn-${index}`
-        ).style.backgroundColor = "green";
-    } else {
-        document.getElementById(
-            `respuesta-btn-${index}`
-        ).style.backgroundColor = "red";
-    }
+//     const response = await fetch(`/verificar-respuesta/${preguntaActual.id}`, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             // Usa la variable csrfToken para enviar el token CSRF
+//             "X-CSRF-TOKEN": csrfToken,
+//         },
+//         body: JSON.stringify({ respuesta }),
+//     });
 
-    // Actualiza el puntaje si es necesario
-    setPuntajeLocal(data.puntaje);
-};
+//     const data = await response.json();
 
-const irASiguientePregunta = () => {
-    const nuevoIndice = indiceActual + 1;
-    if (nuevoIndice < totalPreguntas) {
-        Inertia.get(`/siguiente-pregunta/${nuevoIndice}`);
-    }
-};
+//     // Lógica para cambiar el color del botón según la respuesta
+//     if (data.correcta) {
+//         document.getElementById(
+//             `respuesta-btn-${index}`
+//         ).style.backgroundColor = "green";
+//     } else {
+//         document.getElementById(
+//             `respuesta-btn-${index}`
+//         ).style.backgroundColor = "red";
+//     }
 
-export const irAPreguntaAnterior = () => {
-    const nuevoIndice = indiceActual - 1;
-    if (nuevoIndice >= 0) {
-        Inertia.get(`/pregunta-anterior/${nuevoIndice}`);
-    }
-};
+//     // Actualiza el puntaje si es necesario
+//     setPuntajeLocal(data.puntaje);
+// };
 
-export const reiniciarJuego = () => {
-    Inertia.get(`/reiniciar-juego`);
-};
+// const irASiguientePregunta = () => {
+//     const nuevoIndice = indiceActual + 1;
+//     if (nuevoIndice < totalPreguntas) {
+//         Inertia.get(`/siguiente-pregunta/${nuevoIndice}`);
+//     }
+// };
 
-// const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
+// export const irAPreguntaAnterior = () => {
+//     const nuevoIndice = indiceActual - 1;
+//     if (nuevoIndice >= 0) {
+//         Inertia.get(`/pregunta-anterior/${nuevoIndice}`);
+//     }
+// };
 
-export const ayudaCincuenta = async () => {
-    // Asegúrate de que preguntaActual y preguntaActual.id están definidos
-    if (preguntaActual && preguntaActual.id) {
-        const response = await fetch(`/ayuda-cincuenta/${preguntaActual.id}`, {
-            headers: {
-                Accept: "application/json",
-            },
-        });
-        if (response.ok) {
-            const data = await response.json();
-            // Actualiza el estado con las respuestas filtradas
-            setRespuestasFiltradas(data);
-        } else {
-            console.error("Error al obtener las respuestas filtradas");
-        }
-    }
-};
+// export const reiniciarJuego = () => {
+//     Inertia.get(`/reiniciar-juego`);
+// };
+
+// // const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
+
+// export const ayudaCincuenta = async () => {
+//     // Asegúrate de que preguntaActual y preguntaActual.id están definidos
+//     if (preguntaActual && preguntaActual.id) {
+//         const response = await fetch(`/ayuda-cincuenta/${preguntaActual.id}`, {
+//             headers: {
+//                 Accept: "application/json",
+//             },
+//         });
+//         if (response.ok) {
+//             const data = await response.json();
+//             // Actualiza el estado con las respuestas filtradas
+//             setRespuestasFiltradas(data);
+//         } else {
+//             console.error("Error al obtener las respuestas filtradas");
+//         }
+//     }
+// };
