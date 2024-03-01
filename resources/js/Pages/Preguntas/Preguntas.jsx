@@ -201,9 +201,9 @@ const Preguntas = ({
                 </div>
             </div>{" "}
             <br />
-            <div className="nivel-actual">
+            {/* <div className="nivel-actual">
                 <h2>Nivel Actual: {nivelActual}</h2>
-            </div>
+            </div> */}
             <div className="border mt-2">
                 <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                     ¿LOGO?
