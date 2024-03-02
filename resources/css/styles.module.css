@@ -1,7 +1,7 @@
 .contenedor {
     /* background-image: linear-gradient(to bottom, #1B252F, #8AC9DB, #A8B099); */
-    /* background-image: linear-gradient(to bottom, #000c22, #0f73cb, #023a6b); */
-    background-image: linear-gradient(to bottom, #000c22, #023a6b);
+    background-image: linear-gradient(to bottom, #000c22, #0f73cb, #023a6b);
+    /* background-image: linear-gradient(to bottom, #000c22, #023a6b); */
     /* background-image: linear-gradient(to bottom, #000c22, #001b41, #012f60); */
     /* background-image: linear-gradient(to bottom, #fef8d4, #B8915A); */
 }
