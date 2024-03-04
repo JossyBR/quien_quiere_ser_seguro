@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
 import styles from "../../../css/styles.module.css";
+import Swal from "sweetalert2";
 import { BsHourglassSplit } from "react-icons/bs";
 import {
     FaRegPlayCircle,
@@ -10,11 +11,16 @@ import {
     FaEye,
 } from "react-icons/fa";
 import { MdSportsScore } from "react-icons/md";
-import {
-    NIVEL_INICIAL,
-    obtenerNuevoNivel,
-    debeSubirDeNivel,
-} from "@/Utils/preguntasUtils";
+// import {
+//     NIVEL_INICIAL,
+//     obtenerNuevoNivel,
+//     debeSubirDeNivel,
+// } from "@/Utils/preguntasUtils";
+
+//Para manejar los niveles
+const NIVEL_INICIAL = 1;
+const MAX_NIVELES = 3;
+const ACIERTOS_PARA_SUBIR_NIVEL = 3;
 
 const Preguntas = ({
     preguntaActual,
@@ -28,6 +34,27 @@ const Preguntas = ({
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
     const [nivelActual, setNivelActual] = useState(NIVEL_INICIAL);
     const [aciertosConsecutivos, setAciertosConsecutivos] = useState(0);
+    const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(false);
+
+    //Para aplicar las clases de respuesta correcta e incorrecta
+    const [claseRespuestaCorrecta, setClaseRespuestaCorrecta] = useState("");
+    const [claseRespuestaIncorrecta, setClaseRespuestaIncorrecta] =
+        useState("");
+
+    // Función para determinar si el jugador debe subir de nivel
+    const debeSubirDeNivel = (aciertosConsecutivos) => {
+        console.log("Aciertos consecutivos:", aciertosConsecutivos); // Verificar el valor de los aciertos consecutivos
+        return aciertosConsecutivos >= ACIERTOS_PARA_SUBIR_NIVEL;
+    };
+
+    // Función para obtener el nuevo nivel, si es aplicable
+    const obtenerNuevoNivel = (nivelActual, aciertosConsecutivos) => {
+        if (debeSubirDeNivel(aciertosConsecutivos)) {
+            const nuevoNivel = nivelActual + 1;
+            return nuevoNivel > MAX_NIVELES ? nivelActual : nuevoNivel;
+        }
+        return nivelActual;
+    };
 
     useEffect(() => {
         // Iniciar el temporizador cuando el componente se monta
@@ -56,6 +83,16 @@ const Preguntas = ({
     };
 
     const verificarRespuesta = async (respuesta, index) => {
+        // Si ya se ha seleccionado una respuesta, no hacer nada
+        if (respuestaSeleccionada) {
+            Swal.fire({
+                title: "¡Ya has seleccionado una respuesta!",
+                text: "Por favor, ve a la siguiente pregunta.",
+                icon: "warning",
+                confirmButtonText: "OK",
+            });
+            return;
+        }
         // Obtener el token CSRF del documento
         const csrfToken = document
             .querySelector('meta[name="csrf-token"]')
@@ -79,25 +116,50 @@ const Preguntas = ({
         // Lógica para cambiar el color del botón según la respuesta
         if (data.correcta) {
             // Si la respuesta es correcta, incrementar aciertos consecutivos
-            const nuevosAciertos = aciertosConsecutivos + 1;
-            setAciertosConsecutivos(nuevosAciertos);
+            setAciertosConsecutivos((prevAciertos) => prevAciertos + 1); // Actualizar aciertos consecutivos
 
-            // Verificar si debe subir de nivel
-            if (debeSubirDeNivel(nuevosAciertos)) {
-                const nuevoNivel = obtenerNuevoNivel(
-                    nivelActual,
-                    nuevosAciertos
-                );
-                setNivelActual(nuevoNivel);
-                setAciertosConsecutivos(0); // Resetear contador de aciertos consecutivos
-            }
+            // Establecer la clase CSS para la respuesta correcta y la incorrecta seleccionada
+            setClaseRespuestaCorrecta(`bg-green-500`);
+            setClaseRespuestaIncorrecta(`bg-red-500`);
+
+            // Mostrar alerta con Sweet Alert
+            Swal.fire({
+                title: "¡Respuesta Correcta!",
+                text: "¡Has acertado la pregunta!",
+                icon: "success",
+                confirmButtonText: "Continuar",
+            });
+
+            // Establecer la clase CSS para la respuesta correcta
+            setClaseRespuestaCorrecta("bg-green-500");
         } else {
             // Si la respuesta es incorrecta, resetear aciertos consecutivos
             setAciertosConsecutivos(0);
+
+            // Establecer la clase CSS para la respuesta incorrecta seleccionada
+            setClaseRespuestaIncorrecta(`bg-red-500`);
+
+            // Establecer la clase CSS para la respuesta correcta
+            setClaseRespuestaCorrecta(`bg-green-500`);
+        }
+
+        // Actualiza el estado de nivel después de que los aciertos consecutivos se hayan actualizado
+        if (debeSubirDeNivel(aciertosConsecutivos + 1)) {
+            console.log("Debería subir de nivel"); // Verificar si se detecta la condición de subir de nivel
+            const nuevoNivel = obtenerNuevoNivel(
+                nivelActual,
+                aciertosConsecutivos + 1
+            );
+            console.log("Nuevo nivel:", nuevoNivel);
+            setNivelActual(nuevoNivel);
+            setAciertosConsecutivos(0); // Resetear contador de aciertos consecutivos
         }
 
         // Actualiza el puntaje si es necesario
         setPuntajeLocal(data.puntaje);
+
+        // Desactiva la selección de respuestas
+        setRespuestaSeleccionada(true);
     };
 
     const irASiguientePregunta = () => {
@@ -201,9 +263,9 @@ const Preguntas = ({
                 </div>
             </div>{" "}
             <br />
-            {/* <div className="nivel-actual">
+            <div className="nivel-actual">
                 <h2>Nivel Actual: {nivelActual}</h2>
-            </div> */}
+            </div>
             <div className="border mt-2">
                 <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                     ¿LOGO?
@@ -233,7 +295,12 @@ const Preguntas = ({
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
-                              className={`border-2`}
+                              className={`border-2 ${
+                                  index ===
+                                  preguntaActual.indiceRespuestaCorrecta
+                                      ? claseRespuestaCorrecta
+                                      : claseRespuestaIncorrecta
+                              }`}
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
@@ -250,7 +317,12 @@ const Preguntas = ({
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
-                              className={`${styles.respuestas}`}
+                              className={`${styles.respuestas} ${
+                                  index ===
+                                  preguntaActual.indiceRespuestaCorrecta
+                                      ? claseRespuestaCorrecta
+                                      : claseRespuestaIncorrecta
+                              }`}
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
@@ -260,15 +332,6 @@ const Preguntas = ({
                       ))}
             </div>
             <div className="flex justify-center mt-2">
-                {/* Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0 */}
-                {indiceActual < totalPreguntas - 1 && (
-                    <button
-                        onClick={irASiguientePregunta}
-                        className="border-2  text-white font-bold h-10 px-4 rounded-xl mr-2 hover:scale-105"
-                    >
-                        Continuar
-                    </button>
-                )}
                 {/* Verfifica si no se esta en la primera pregunta, si indiceactual es mayor que cero */}
                 {indiceActual > 0 && (
                     <button
@@ -276,6 +339,15 @@ const Preguntas = ({
                         className="border-2 text-white font-bold h-10 px-4  rounded-xl"
                     >
                         Anterior
+                    </button>
+                )}
+                {/* Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0 */}
+                {indiceActual < totalPreguntas - 1 && (
+                    <button
+                        onClick={irASiguientePregunta}
+                        className="border-2  text-white font-bold h-10 px-4 rounded-xl mr-2 hover:scale-105"
+                    >
+                        Siguiente
                     </button>
                 )}
             </div>
