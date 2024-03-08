@@ -17,11 +17,6 @@ import { MdSportsScore } from "react-icons/md";
 //     debeSubirDeNivel,
 // } from "@/Utils/preguntasUtils";
 
-//Para manejar los niveles
-const NIVEL_INICIAL = 1;
-const MAX_NIVELES = 3;
-const ACIERTOS_PARA_SUBIR_NIVEL = 3;
-
 const Preguntas = ({
     preguntaActual,
     indiceActual,
@@ -32,134 +27,96 @@ const Preguntas = ({
     const [tiempoRestante, setTiempoRestante] = useState(30);
     const [temporizador, setTemporizador] = useState(null);
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
-    const [nivelActual, setNivelActual] = useState(NIVEL_INICIAL);
-    const [aciertosConsecutivos, setAciertosConsecutivos] = useState(0);
     const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(false);
 
     //Para aplicar las clases de respuesta correcta e incorrecta
     const [claseRespuestaCorrecta, setClaseRespuestaCorrecta] = useState("");
     const [claseRespuestaIncorrecta, setClaseRespuestaIncorrecta] =
         useState("");
-
-    // Función para determinar si el jugador debe subir de nivel
-    const debeSubirDeNivel = (aciertosConsecutivos) => {
-        console.log("Aciertos consecutivos:", aciertosConsecutivos); // Verificar el valor de los aciertos consecutivos
-        return aciertosConsecutivos >= ACIERTOS_PARA_SUBIR_NIVEL;
-    };
-
-    // Función para obtener el nuevo nivel, si es aplicable
-    const obtenerNuevoNivel = (nivelActual, aciertosConsecutivos) => {
-        if (debeSubirDeNivel(aciertosConsecutivos)) {
-            const nuevoNivel = nivelActual + 1;
-            return nuevoNivel > MAX_NIVELES ? nivelActual : nuevoNivel;
-        }
-        return nivelActual;
-    };
+    useEffect(() => {
+        iniciarTemporizador();
+        return () => {
+            // Asegúrese de limpiar el temporizador al desmontar
+            clearInterval(temporizador);
+        };
+    }, []);
 
     useEffect(() => {
-        // Iniciar el temporizador cuando el componente se monta
-        iniciarTemporizador();
+        // Actualiza puntajeLocal cuando el puntaje prop cambia
         setPuntajeLocal(puntaje);
     }, [puntaje]);
 
     const iniciarTemporizador = () => {
         if (!temporizador) {
             const id = setInterval(() => {
-                setTiempoRestante((prevTiempo) => {
-                    if (prevTiempo <= 1) {
-                        clearInterval(id);
-                        return 0;
-                    }
-                    return prevTiempo - 1;
-                });
+                setTiempoRestante((prev) => (prev > 0 ? prev - 1 : 0));
             }, 1000);
             setTemporizador(id);
         }
     };
 
     const detenerTemporizador = () => {
-        clearInterval(temporizador);
-        setTemporizador(null);
+        if (temporizador) {
+            clearInterval(temporizador);
+            setTemporizador(null);
+        }
     };
 
-    const verificarRespuesta = async (respuesta, index) => {
-        // Si ya se ha seleccionado una respuesta, no hacer nada
+    const verificarRespuesta = async (respuesta) => {
         if (respuestaSeleccionada) {
-            Swal.fire({
-                title: "¡Ya has seleccionado una respuesta!",
-                text: "Por favor, ve a la siguiente pregunta.",
-                icon: "warning",
-                confirmButtonText: "OK",
-            });
+            Swal.fire(
+                "¡Ya has seleccionado una respuesta!",
+                "Espera a la siguiente pregunta.",
+                "warning"
+            );
             return;
         }
-        // Obtener el token CSRF del documento
-        const csrfToken = document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content");
 
-        const response = await fetch(
-            `/verificar-respuesta/${preguntaActual.id}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    // Usa la variable csrfToken para enviar el token CSRF
-                    "X-CSRF-TOKEN": csrfToken,
-                },
-                body: JSON.stringify({ respuesta }),
-            }
-        );
+        setRespuestaSeleccionada(true); // Evitar múltiples respuestas
+        detenerTemporizador(); // Detener temporizador al responder
 
-        const data = await response.json();
-
-        // Lógica para cambiar el color del botón según la respuesta
-        if (data.correcta) {
-            // Si la respuesta es correcta, incrementar aciertos consecutivos
-            setAciertosConsecutivos((prevAciertos) => prevAciertos + 1); // Actualizar aciertos consecutivos
-
-            // Establecer la clase CSS para la respuesta correcta y la incorrecta seleccionada
-            setClaseRespuestaCorrecta(`bg-green-500`);
-            setClaseRespuestaIncorrecta(`bg-red-500`);
-
-            // Mostrar alerta con Sweet Alert
-            Swal.fire({
-                title: "¡Respuesta Correcta!",
-                text: "¡Has acertado la pregunta!",
-                icon: "success",
-                confirmButtonText: "Continuar",
-            });
-
-            // Establecer la clase CSS para la respuesta correcta
-            setClaseRespuestaCorrecta("bg-green-500");
-        } else {
-            // Si la respuesta es incorrecta, resetear aciertos consecutivos
-            setAciertosConsecutivos(0);
-
-            // Establecer la clase CSS para la respuesta incorrecta seleccionada
-            setClaseRespuestaIncorrecta(`bg-red-500`);
-
-            // Establecer la clase CSS para la respuesta correcta
-            setClaseRespuestaCorrecta(`bg-green-500`);
-        }
-
-        // Actualiza el estado de nivel después de que los aciertos consecutivos se hayan actualizado
-        if (debeSubirDeNivel(aciertosConsecutivos + 1)) {
-            console.log("Debería subir de nivel"); // Verificar si se detecta la condición de subir de nivel
-            const nuevoNivel = obtenerNuevoNivel(
-                nivelActual,
-                aciertosConsecutivos + 1
+        try {
+            const response = await fetch(
+                `/verificar-respuesta/${preguntaActual.id}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
+                    },
+                    body: JSON.stringify({ respuesta }),
+                }
             );
-            console.log("Nuevo nivel:", nuevoNivel);
-            setNivelActual(nuevoNivel);
-            setAciertosConsecutivos(0); // Resetear contador de aciertos consecutivos
+
+            if (!response.ok)
+                throw new Error("Respuesta del servidor no fue OK.");
+
+            const data = await response.json();
+
+            // Actualiza puntaje inmediatamente con la respuesta del servidor
+            setPuntajeLocal(data.puntaje);
+
+            if (data.correcta) {
+                setAciertosConsecutivos((prev) => prev + 1);
+                Swal.fire("¡Correcto!", "Has acertado.", "success");
+
+                // Verifica si debe subir de nivel
+                if (aciertosConsecutivos + 1 >= ACIERTOS_PARA_SUBIR_NIVEL) {
+                    setNivelActual((prev) =>
+                        prev < MAX_NIVELES ? prev + 1 : MAX_NIVELES
+                    );
+                    setAciertosConsecutivos(0); // Resetea aciertos consecutivos al subir de nivel
+                }
+            } else {
+                setAciertosConsecutivos(0); // Resetea aciertos consecutivos si responde incorrectamente
+                Swal.fire("Incorrecto", "Respuesta no es correcta.", "error");
+            }
+        } catch (error) {
+            console.error("Error al verificar respuesta:", error);
+            Swal.fire("Error", "Problema al verificar respuesta.", "error");
         }
-
-        // Actualiza el puntaje si es necesario
-        setPuntajeLocal(data.puntaje);
-
-        // Desactiva la selección de respuestas
-        setRespuestaSeleccionada(true);
     };
 
     const irASiguientePregunta = () => {
