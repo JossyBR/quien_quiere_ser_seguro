@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
 import styles from "../../../css/styles.module.css";
+import Swal from "sweetalert2";
 import { BsHourglassSplit } from "react-icons/bs";
 import {
     FaRegPlayCircle,
@@ -18,15 +19,68 @@ const Preguntas = ({
     puntaje,
 }) => {
     console.log("AQUI", preguntaActual, indiceActual, totalPreguntas, puntaje);
+    //Tiempo
     const [tiempoRestante, setTiempoRestante] = useState(30);
     const [temporizador, setTemporizador] = useState(null);
+    //Puntaje
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
+    //Niveles
+    const [nivelActual, setNivelActual] = useState(1);
+    const [preguntasCorrectas, setPreguntasCorrectas] = useState(0);
+    //Seleccion de preguntas nuevamente
+    const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(false);
+
+    const [preguntasRespondidasCorrectamente, setPreguntasRespondidasCorrectamente] = useState(new Set());
+
+    // useEffect(() => {
+    //     // Iniciar el temporizador cuando el componente se monta
+    //     iniciarTemporizador();
+    //     setPuntajeLocal(puntaje);
+    // }, [puntaje]);
+
+    // useEffect(() => {
+    //     // Verificar si el jugador ha respondido correctamente 3 preguntas para avanzar de nivel
+    //     if (preguntasCorrectas === 3) {
+    //         setNivelActual((prevNivel) => prevNivel + 1); // Avanzar al siguiente nivel
+    //         setPreguntasCorrectas(0); // Resetear el contador de preguntas correctas
+    //         // Mostrar alerta de avance de nivel
+    //         Swal.fire(
+    //             "¡Felicidades!",
+    //             "Has pasado al siguiente nivel.",
+    //             "success"
+    //         );
+    //     }
+    //     console.log("Preguntas correctas actualizadas:", preguntasCorrectas);
+    //     console.log("Nivel actualizado:", nivelActual);
+    // }, [preguntasCorrectas, nivelActual]);
+    // console.log("Nivel actual:", nivelActual);
 
     useEffect(() => {
-        // Iniciar el temporizador cuando el componente se monta
         iniciarTemporizador();
+        return () => {
+            if (temporizador) {
+                clearInterval(temporizador);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
         setPuntajeLocal(puntaje);
     }, [puntaje]);
+
+    useEffect(() => {
+        if (preguntasCorrectas === 3) {
+            // Cambio principal: Asegúrate de reiniciar preguntasCorrectas sólo después de avanzar de nivel
+            Swal.fire(
+                "¡Felicidades!",
+                "Has pasado al siguiente nivel.",
+                "success"
+            ).then(() => {
+                setNivelActual(nivelActual + 1);
+            });
+            setPreguntasCorrectas(0); // Reiniciar el contador de preguntas correctas para el nuevo nivel
+        }
+    }, [preguntasCorrectas]);
 
     const iniciarTemporizador = () => {
         if (!temporizador) {
@@ -49,6 +103,17 @@ const Preguntas = ({
     };
 
     const verificarRespuesta = async (respuesta, index) => {
+        if (respuestaSeleccionada) {
+            Swal.fire(
+                "¡Ya has seleccionado una respuesta!",
+                "Espera a la siguiente pregunta.",
+                "warning"
+            );
+            return;
+        }
+        setRespuestaSeleccionada(true); // Evitar múltiples respuestas
+        detenerTemporizador(); // Detener temporizador al responder
+
         // Obtener el token CSRF del documento
         const csrfToken = document
             .querySelector('meta[name="csrf-token"]')
@@ -74,14 +139,29 @@ const Preguntas = ({
             document.getElementById(
                 `respuesta-btn-${index}`
             ).style.backgroundColor = "green";
+            setPreguntasCorrectas(preguntasCorrectas + 1); // Incrementar preguntas correctas
+
+            // Incrementar preguntasCorrectas si la respuesta es correcta
+            // setPreguntasCorrectas((prev) => prev + 1);
+            // Verificar si el jugador ha respondido correctamente 3 preguntas para avanzar de nivel
+            // if (preguntasCorrectas + 1 === 3) {
+            //     // Usamos +1 porque aún no se ha actualizado el estado
+            //     setPreguntasCorrectas(0); // Resetear el contador de preguntas correctas
+            //     // Mostrar alerta de avance de nivel
+            //     // console.log("Preguntas correctas", preguntasCorrectas);
+            // }
+            // console.log("Preguntas correctas1", preguntasCorrectas);
         } else {
             document.getElementById(
                 `respuesta-btn-${index}`
             ).style.backgroundColor = "red";
         }
+        console.log("Preguntas correctas2", preguntasCorrectas);
+        console.log("Nivel actual2:", nivelActual);
 
         // Actualiza el puntaje si es necesario
         setPuntajeLocal(data.puntaje);
+        setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
     };
 
     const irASiguientePregunta = () => {
@@ -185,6 +265,13 @@ const Preguntas = ({
                 </div>
             </div>{" "}
             <br />
+            <div className="flex gap-1 mt-4">
+                {/* <MdSportsScore className="h-7 w-7" /> */}
+                <p className="text-base">
+                    Nivel Actual:{" "}
+                    <span className="font-bold text-lg">{nivelActual}</span>
+                </p>
+            </div>
             <div className="border mt-2">
                 <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
                     ¿LOGO?
@@ -241,15 +328,6 @@ const Preguntas = ({
                       ))}
             </div>
             <div className="flex justify-center mt-2">
-                {/* Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0 */}
-                {indiceActual < totalPreguntas - 1 && (
-                    <button
-                        onClick={irASiguientePregunta}
-                        className="border-2  text-white font-bold h-10 px-4 rounded-xl mr-2 hover:scale-105"
-                    >
-                        Continuar
-                    </button>
-                )}
                 {/* Verfifica si no se esta en la primera pregunta, si indiceactual es mayor que cero */}
                 {indiceActual > 0 && (
                     <button
@@ -257,6 +335,15 @@ const Preguntas = ({
                         className="border-2 text-white font-bold h-10 px-4  rounded-xl"
                     >
                         Anterior
+                    </button>
+                )}
+                {/* Si indiceactual es menor que totalpreguntas quiere decir que hay mas preguntas despues de la actual se resta 1 de $totalPreguntas para ajustar el hecho de que los índices comienzan en 0 */}
+                {indiceActual < totalPreguntas - 1 && (
+                    <button
+                        onClick={irASiguientePregunta}
+                        className="border-2  text-white font-bold h-10 px-4 rounded-xl mr-2 hover:scale-105"
+                    >
+                        Siguiente
                     </button>
                 )}
             </div>
