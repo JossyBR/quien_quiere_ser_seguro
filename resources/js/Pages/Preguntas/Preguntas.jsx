@@ -32,11 +32,11 @@ const Preguntas = ({
 
     const [preguntasRespondidasCorrectamente, setPreguntasRespondidasCorrectamente] = useState(new Set());
 
-    // useEffect(() => {
-    //     // Iniciar el temporizador cuando el componente se monta
-    //     iniciarTemporizador();
-    //     setPuntajeLocal(puntaje);
-    // }, [puntaje]);
+    useEffect(() => {
+        // Iniciar el temporizador cuando el componente se monta
+        iniciarTemporizador();
+        setPuntajeLocal(puntaje);
+    }, [puntaje]);
 
     // useEffect(() => {
     //     // Verificar si el jugador ha respondido correctamente 3 preguntas para avanzar de nivel
