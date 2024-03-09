@@ -17,6 +17,8 @@ import { MdSportsScore } from "react-icons/md";
 //     debeSubirDeNivel,
 // } from "@/Utils/preguntasUtils";
 
+//Se creo la rama prueba"
+
 const Preguntas = ({
     preguntaActual,
     indiceActual,
