@@ -71,21 +71,6 @@ const Preguntas = ({
     }, [nivelActual, preguntasCorrectas, preguntasRespondidasCorrectamente]); // Dependencias
 
     useEffect(() => {
-        // Iniciar el temporizador cuando el componente se monta
-        iniciarTemporizador();
-        setPuntajeLocal(puntaje);
-    }, [puntaje]);
-
-    // useEffect(() => {
-    //     iniciarTemporizador();
-    //     return () => {
-    //         if (temporizador) {
-    //             clearInterval(temporizador);
-    //         }
-    //     };
-    // }, []);
-
-    useEffect(() => {
         setPuntajeLocal(puntaje);
     }, [puntaje]);
 

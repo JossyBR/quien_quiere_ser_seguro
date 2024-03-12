@@ -55,6 +55,9 @@ Route::get('/reiniciar-juego', [PreguntaController::class, 'reiniciarJuego'])->n
 // Ruta para el comodín 50/50
 Route::get('/ayuda-cincuenta/{id}', [PreguntaController::class, 'ayudaCincuenta'])->name('ayuda_cincuenta');
 
+// Ruta para obtener una pregunta por índice
+Route::get('/pregunta/{indice}', [PreguntaController::class, 'obtenerPorIndice'])->name('pregunta.porIndice');
+
 
 
 //Para auth, por ahora no lo estoy utilizando
