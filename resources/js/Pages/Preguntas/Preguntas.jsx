@@ -31,7 +31,7 @@ const Preguntas = ({
     const [temporizador, setTemporizador] = useState(null);
     //Puntaje
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
-<<<<<<< HEAD
+
     const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(false);
 
     //Para aplicar las clases de respuesta correcta e incorrecta
@@ -45,12 +45,12 @@ const Preguntas = ({
             clearInterval(temporizador);
         };
     }, []);
-=======
+
     //Niveles
     const [nivelActual, setNivelActual] = useState(1);
     const [preguntasCorrectas, setPreguntasCorrectas] = useState(0);
     //Seleccion de preguntas nuevamente
-    const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(false);
+
 
     const [
         preguntasRespondidasCorrectamente,
@@ -91,10 +91,10 @@ const Preguntas = ({
     useEffect(() => {
         guardarEstadoEnLocalStorage(); // Guarda el estado actual en Local Storage
     }, [nivelActual, preguntasCorrectas, preguntasRespondidasCorrectamente]); // Dependencias
->>>>>>> prueba
 
     useEffect(() => {
-        // Actualiza puntajeLocal cuando el puntaje prop cambia
+        // Iniciar el temporizador cuando el componente se monta
+        iniciarTemporizador();
         setPuntajeLocal(puntaje);
     }, [puntaje]);
 
@@ -127,29 +127,23 @@ const Preguntas = ({
     const iniciarTemporizador = () => {
         if (!temporizador) {
             const id = setInterval(() => {
-                setTiempoRestante((prev) => (prev > 0 ? prev - 1 : 0));
+                setTiempoRestante((prevTiempo) => {
+                    if (prevTiempo <= 1) {
+                        clearInterval(id);
+                        return 0;
+                    }
+                    return prevTiempo - 1;
+                });
             }, 1000);
             setTemporizador(id);
         }
     };
 
     const detenerTemporizador = () => {
-        if (temporizador) {
-            clearInterval(temporizador);
-            setTemporizador(null);
-        }
+        clearInterval(temporizador);
+        setTemporizador(null);
     };
 
-<<<<<<< HEAD
-    const verificarRespuesta = async (respuesta) => {
-        if (respuestaSeleccionada) {
-            Swal.fire(
-                "¡Ya has seleccionado una respuesta!",
-                "Espera a la siguiente pregunta.",
-                "warning"
-            );
-            return;
-=======
     const verificarRespuesta = async (respuesta, index) => {
         if (respuestaSeleccionada) {
             Swal.fire(
@@ -200,62 +194,13 @@ const Preguntas = ({
             document.getElementById(
                 `respuesta-btn-${index}`
             ).style.backgroundColor = "red";
->>>>>>> prueba
         }
         console.log("Preguntas correctas2", preguntasCorrectas);
         console.log("Nivel actual2:", nivelActual);
 
-<<<<<<< HEAD
-        setRespuestaSeleccionada(true); // Evitar múltiples respuestas
-        detenerTemporizador(); // Detener temporizador al responder
-
-        try {
-            const response = await fetch(
-                `/verificar-respuesta/${preguntaActual.id}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document
-                            .querySelector('meta[name="csrf-token"]')
-                            .getAttribute("content"),
-                    },
-                    body: JSON.stringify({ respuesta }),
-                }
-            );
-
-            if (!response.ok)
-                throw new Error("Respuesta del servidor no fue OK.");
-
-            const data = await response.json();
-
-            // Actualiza puntaje inmediatamente con la respuesta del servidor
-            setPuntajeLocal(data.puntaje);
-
-            if (data.correcta) {
-                setAciertosConsecutivos((prev) => prev + 1);
-                Swal.fire("¡Correcto!", "Has acertado.", "success");
-
-                // Verifica si debe subir de nivel
-                if (aciertosConsecutivos + 1 >= ACIERTOS_PARA_SUBIR_NIVEL) {
-                    setNivelActual((prev) =>
-                        prev < MAX_NIVELES ? prev + 1 : MAX_NIVELES
-                    );
-                    setAciertosConsecutivos(0); // Resetea aciertos consecutivos al subir de nivel
-                }
-            } else {
-                setAciertosConsecutivos(0); // Resetea aciertos consecutivos si responde incorrectamente
-                Swal.fire("Incorrecto", "Respuesta no es correcta.", "error");
-            }
-        } catch (error) {
-            console.error("Error al verificar respuesta:", error);
-            Swal.fire("Error", "Problema al verificar respuesta.", "error");
-        }
-=======
         // Actualiza el puntaje si es necesario
         setPuntajeLocal(data.puntaje);
         // setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
->>>>>>> prueba
     };
 
     const irASiguientePregunta = () => {
@@ -369,17 +314,12 @@ const Preguntas = ({
                 </div>
             </div>{" "}
             <br />
-<<<<<<< HEAD
-            <div className="nivel-actual">
-                <h2>Nivel Actual: {nivelActual}</h2>
-=======
             <div className="flex gap-1 mt-4">
                 {/* <MdSportsScore className="h-7 w-7" /> */}
                 <p className="text-base">
                     Nivel Actual:{" "}
                     <span className="font-bold text-lg">{nivelActual}</span>
                 </p>
->>>>>>> prueba
             </div>
             <div className="border mt-2">
                 <h1 className="text-xl text-center md:text-4xl font-bold mb-4">
@@ -410,12 +350,7 @@ const Preguntas = ({
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
-                              className={`border-2 ${
-                                  index ===
-                                  preguntaActual.indiceRespuestaCorrecta
-                                      ? claseRespuestaCorrecta
-                                      : claseRespuestaIncorrecta
-                              }`}
+                              className={`border-2`}
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
@@ -432,12 +367,7 @@ const Preguntas = ({
                           <button
                               id={`respuesta-btn-${index}`}
                               key={index}
-                              className={`${styles.respuestas} ${
-                                  index ===
-                                  preguntaActual.indiceRespuestaCorrecta
-                                      ? claseRespuestaCorrecta
-                                      : claseRespuestaIncorrecta
-                              }`}
+                              className={`${styles.respuestas}`}
                               onClick={() =>
                                   verificarRespuesta(respuesta, index)
                               }
