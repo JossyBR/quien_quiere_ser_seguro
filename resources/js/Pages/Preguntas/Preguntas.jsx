@@ -76,14 +76,14 @@ const Preguntas = ({
         setPuntajeLocal(puntaje);
     }, [puntaje]);
 
-    useEffect(() => {
-        iniciarTemporizador();
-        return () => {
-            if (temporizador) {
-                clearInterval(temporizador);
-            }
-        };
-    }, []);
+    // useEffect(() => {
+    //     iniciarTemporizador();
+    //     return () => {
+    //         if (temporizador) {
+    //             clearInterval(temporizador);
+    //         }
+    //     };
+    // }, []);
 
     useEffect(() => {
         setPuntajeLocal(puntaje);
