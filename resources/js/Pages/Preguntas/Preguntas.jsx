@@ -30,30 +30,51 @@ const Preguntas = ({
     //Seleccion de preguntas nuevamente
     const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(false);
 
-    const [preguntasRespondidasCorrectamente, setPreguntasRespondidasCorrectamente] = useState(new Set());
+    const [
+        preguntasRespondidasCorrectamente,
+        setPreguntasRespondidasCorrectamente,
+    ] = useState(new Set());
+
+    //Funcion para guardar el localstorage, se llama cada que hay un cambio en el estado a persistir
+    const guardarEstadoEnLocalStorage = () => {
+        const estadoDelJuego = {
+            nivelActual,
+            preguntasCorrectas,
+            preguntasRespondidasCorrectamente: Array.from(
+                preguntasRespondidasCorrectamente
+            ),
+        };
+        localStorage.setItem("estadoDelJuego", JSON.stringify(estadoDelJuego));
+    };
+
+    //Verifica si ya existe un estado en el local storage inicia la aplicacion con ese estado
+    useEffect(() => {
+        const estadoGuardado = localStorage.getItem("estadoDelJuego");
+        if (estadoGuardado) {
+            const {
+                nivelActual,
+                preguntasCorrectas,
+                preguntasRespondidasCorrectamente,
+            } = JSON.parse(estadoGuardado);
+            setNivelActual(nivelActual);
+            setPreguntasCorrectas(preguntasCorrectas);
+            setPreguntasRespondidasCorrectamente(
+                new Set(preguntasRespondidasCorrectamente)
+            );
+        }
+        iniciarTemporizador(); // Asumiendo que siempre quieras iniciar el temporizador al cargar
+    }, []);
+
+    //llama a la funcion guardarEstadoEnLocalStorage, cada que se actualicen los estados de las dependencias
+    useEffect(() => {
+        guardarEstadoEnLocalStorage(); // Guarda el estado actual en Local Storage
+    }, [nivelActual, preguntasCorrectas, preguntasRespondidasCorrectamente]); // Dependencias
 
     useEffect(() => {
         // Iniciar el temporizador cuando el componente se monta
         iniciarTemporizador();
         setPuntajeLocal(puntaje);
     }, [puntaje]);
-
-    // useEffect(() => {
-    //     // Verificar si el jugador ha respondido correctamente 3 preguntas para avanzar de nivel
-    //     if (preguntasCorrectas === 3) {
-    //         setNivelActual((prevNivel) => prevNivel + 1); // Avanzar al siguiente nivel
-    //         setPreguntasCorrectas(0); // Resetear el contador de preguntas correctas
-    //         // Mostrar alerta de avance de nivel
-    //         Swal.fire(
-    //             "¡Felicidades!",
-    //             "Has pasado al siguiente nivel.",
-    //             "success"
-    //         );
-    //     }
-    //     console.log("Preguntas correctas actualizadas:", preguntasCorrectas);
-    //     console.log("Nivel actualizado:", nivelActual);
-    // }, [preguntasCorrectas, nivelActual]);
-    // console.log("Nivel actual:", nivelActual);
 
     useEffect(() => {
         iniciarTemporizador();
@@ -70,7 +91,6 @@ const Preguntas = ({
 
     useEffect(() => {
         if (preguntasCorrectas === 3) {
-            // Cambio principal: Asegúrate de reiniciar preguntasCorrectas sólo después de avanzar de nivel
             Swal.fire(
                 "¡Felicidades!",
                 "Has pasado al siguiente nivel.",
@@ -106,7 +126,7 @@ const Preguntas = ({
         if (respuestaSeleccionada) {
             Swal.fire(
                 "¡Ya has seleccionado una respuesta!",
-                "Espera a la siguiente pregunta.",
+                "Pasa a la siguiente pregunta.",
                 "warning"
             );
             return;
@@ -139,18 +159,15 @@ const Preguntas = ({
             document.getElementById(
                 `respuesta-btn-${index}`
             ).style.backgroundColor = "green";
-            setPreguntasCorrectas(preguntasCorrectas + 1); // Incrementar preguntas correctas
 
-            // Incrementar preguntasCorrectas si la respuesta es correcta
-            // setPreguntasCorrectas((prev) => prev + 1);
-            // Verificar si el jugador ha respondido correctamente 3 preguntas para avanzar de nivel
-            // if (preguntasCorrectas + 1 === 3) {
-            //     // Usamos +1 porque aún no se ha actualizado el estado
-            //     setPreguntasCorrectas(0); // Resetear el contador de preguntas correctas
-            //     // Mostrar alerta de avance de nivel
-            //     // console.log("Preguntas correctas", preguntasCorrectas);
-            // }
-            // console.log("Preguntas correctas1", preguntasCorrectas);
+            // Verifica si la pregunta ya ha sido respondida correctamente antes
+            if (!preguntasRespondidasCorrectamente.has(preguntaActual.id)) {
+                setPreguntasCorrectas(preguntasCorrectas + 1); // Incrementar solo si no se ha respondido antes
+                setPreguntasRespondidasCorrectamente((prev) =>
+                    new Set(prev).add(preguntaActual.id)
+                );
+                guardarEstadoEnLocalStorage();
+            }
         } else {
             document.getElementById(
                 `respuesta-btn-${index}`
@@ -161,7 +178,7 @@ const Preguntas = ({
 
         // Actualiza el puntaje si es necesario
         setPuntajeLocal(data.puntaje);
-        setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
+        // setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
     };
 
     const irASiguientePregunta = () => {
@@ -178,7 +195,17 @@ const Preguntas = ({
         }
     };
 
+    // const reiniciarJuego = () => {
+    //     Inertia.get(`/reiniciar-juego`);
+    // };
+
     const reiniciarJuego = () => {
+        localStorage.removeItem("estadoDelJuego"); // Limpia el estado guardado
+        // Restablece los estados locales al estado inicial deseado
+        setNivelActual(1);
+        setPreguntasCorrectas(0);
+        setPreguntasRespondidasCorrectamente(new Set());
+        // Redirección o lógica adicional para reiniciar el juego
         Inertia.get(`/reiniciar-juego`);
     };
 
