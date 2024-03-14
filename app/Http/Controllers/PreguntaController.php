@@ -185,17 +185,5 @@ public function ayudaCincuenta(Request $request, $id) {
     // return response()->json($respuestasMostrar);
 }
 
-public function obtenerPorIndice($indice)
-{
-    $preguntas = Pregunta::all();
-    $pregunta = $preguntas->skip($indice)->first();
-
-    if (!$pregunta) {
-        return response()->json(['error' => 'Pregunta no encontrada'], 404);
-    }
-
-    return response()->json($pregunta);
-}
-
-    
+   
 }
