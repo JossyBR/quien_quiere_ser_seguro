@@ -12,6 +12,12 @@ import {
 } from "react-icons/fa";
 import { MdSportsScore } from "react-icons/md";
 import useTemporizador from "@/Utils/useTemporizador";
+import Temporizador from "@/Components/Temporizador";
+import {
+    ayudaCincuenta,
+    reiniciarJuego,
+    verificarRespuesta,
+} from "../../Utils/preguntasUtils";
 
 const Preguntas = ({
     preguntaActual,
@@ -20,12 +26,11 @@ const Preguntas = ({
     puntaje,
 }) => {
     console.log("AQUI", preguntaActual, indiceActual, totalPreguntas, puntaje);
-    //Tiempo
+
+    const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
     const { tiempoRestante, iniciarTemporizador, detenerTemporizador } =
         useTemporizador(30);
 
-    // const [tiempoRestante, setTiempoRestante] = useState(30);
-    // const [temporizador, setTemporizador] = useState(null);
     //Puntaje
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
     //Niveles
@@ -66,7 +71,7 @@ const Preguntas = ({
                 new Set(preguntasRespondidasCorrectamente)
             );
         }
-        iniciarTemporizador(); // Asumiendo que siempre quieras iniciar el temporizador al cargar
+        // iniciarTemporizador(); // Asumiendo que siempre quieras iniciar el temporizador al cargar
     }, []);
 
     //llama a la funcion guardarEstadoEnLocalStorage, cada que se actualicen los estados de las dependencias
@@ -91,84 +96,64 @@ const Preguntas = ({
         }
     }, [preguntasCorrectas]);
 
-    // const iniciarTemporizador = () => {
-    //     if (!temporizador) {
-    //         const id = setInterval(() => {
-    //             setTiempoRestante((prevTiempo) => {
-    //                 if (prevTiempo <= 1) {
-    //                     clearInterval(id);
-    //                     return 0;
-    //                 }
-    //                 return prevTiempo - 1;
-    //             });
-    //         }, 1000);
-    //         setTemporizador(id);
+    // const verificarRespuesta = async (respuesta, index) => {
+    //     if (respuestaSeleccionada) {
+    //         Swal.fire(
+    //             "¡Ya has seleccionado una respuesta!",
+    //             "Pasa a la siguiente pregunta.",
+    //             "warning"
+    //         );
+    //         return;
     //     }
+    //     setRespuestaSeleccionada(true); // Evitar múltiples respuestas
+    //     detenerTemporizador(); // Detener temporizador al responder
+
+    //     // Obtener el token CSRF del documento
+    //     const csrfToken = document
+    //         .querySelector('meta[name="csrf-token"]')
+    //         .getAttribute("content");
+
+    //     const response = await fetch(
+    //         `/verificar-respuesta/${preguntaActual.id}`,
+    //         {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 // Usa la variable csrfToken para enviar el token CSRF
+    //                 "X-CSRF-TOKEN": csrfToken,
+    //             },
+    //             body: JSON.stringify({ respuesta }),
+    //         }
+    //     );
+
+    //     const data = await response.json();
+
+    //     // Lógica para cambiar el color del botón según la respuesta
+    //     if (data.correcta) {
+    //         document.getElementById(
+    //             `respuesta-btn-${index}`
+    //         ).style.backgroundColor = "green";
+
+    //         // Verifica si la pregunta ya ha sido respondida correctamente antes
+    //         if (!preguntasRespondidasCorrectamente.has(preguntaActual.id)) {
+    //             setPreguntasCorrectas(preguntasCorrectas + 1); // Incrementar solo si no se ha respondido antes
+    //             setPreguntasRespondidasCorrectamente((prev) =>
+    //                 new Set(prev).add(preguntaActual.id)
+    //             );
+    //             guardarEstadoEnLocalStorage();
+    //         }
+    //     } else {
+    //         document.getElementById(
+    //             `respuesta-btn-${index}`
+    //         ).style.backgroundColor = "red";
+    //     }
+    //     console.log("Preguntas correctas2", preguntasCorrectas);
+    //     console.log("Nivel actual2:", nivelActual);
+
+    //     // Actualiza el puntaje si es necesario
+    //     setPuntajeLocal(data.puntaje);
+    //     // setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
     // };
-
-    // const detenerTemporizador = () => {
-    //     clearInterval(temporizador);
-    //     setTemporizador(null);
-    // };
-
-    const verificarRespuesta = async (respuesta, index) => {
-        if (respuestaSeleccionada) {
-            Swal.fire(
-                "¡Ya has seleccionado una respuesta!",
-                "Pasa a la siguiente pregunta.",
-                "warning"
-            );
-            return;
-        }
-        setRespuestaSeleccionada(true); // Evitar múltiples respuestas
-        detenerTemporizador(); // Detener temporizador al responder
-
-        // Obtener el token CSRF del documento
-        const csrfToken = document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content");
-
-        const response = await fetch(
-            `/verificar-respuesta/${preguntaActual.id}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    // Usa la variable csrfToken para enviar el token CSRF
-                    "X-CSRF-TOKEN": csrfToken,
-                },
-                body: JSON.stringify({ respuesta }),
-            }
-        );
-
-        const data = await response.json();
-
-        // Lógica para cambiar el color del botón según la respuesta
-        if (data.correcta) {
-            document.getElementById(
-                `respuesta-btn-${index}`
-            ).style.backgroundColor = "green";
-
-            // Verifica si la pregunta ya ha sido respondida correctamente antes
-            if (!preguntasRespondidasCorrectamente.has(preguntaActual.id)) {
-                setPreguntasCorrectas(preguntasCorrectas + 1); // Incrementar solo si no se ha respondido antes
-                setPreguntasRespondidasCorrectamente((prev) =>
-                    new Set(prev).add(preguntaActual.id)
-                );
-                guardarEstadoEnLocalStorage();
-            }
-        } else {
-            document.getElementById(
-                `respuesta-btn-${index}`
-            ).style.backgroundColor = "red";
-        }
-        console.log("Preguntas correctas2", preguntasCorrectas);
-        console.log("Nivel actual2:", nivelActual);
-
-        // Actualiza el puntaje si es necesario
-        setPuntajeLocal(data.puntaje);
-        // setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
-    };
 
     const irASiguientePregunta = () => {
         const nuevoIndice = indiceActual + 1;
@@ -206,36 +191,39 @@ const Preguntas = ({
     //     Inertia.get(`/reiniciar-juego`);
     // };
 
-    const reiniciarJuego = () => {
-        localStorage.removeItem("estadoDelJuego"); // Limpia el estado guardado
-        // Restablece los estados locales al estado inicial deseado
-        setNivelActual(1);
-        setPreguntasCorrectas(0);
-        setPreguntasRespondidasCorrectamente(new Set());
-        // Redirección o lógica adicional para reiniciar el juego
-        Inertia.get(`/reiniciar-juego`);
+    const manejarVerificarRespuesta = async (respuesta, index) => {
+        const csrfToken = document
+            .querySelector('meta[name="csrf-token"]')
+            .getAttribute("content");
+
+        await verificarRespuesta({
+            respuesta,
+            preguntaId: preguntaActual.id,
+            csrfToken,
+            index,
+            setRespuestaSeleccionada,
+            detenerTemporizador,
+            setPreguntasCorrectas,
+            preguntasRespondidasCorrectamente,
+            setPreguntasRespondidasCorrectamente,
+            setPuntajeLocal,
+        });
+
+        // Puedes hacer ajustes adicionales aquí si es necesario.
     };
 
-    const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
+    const manejarReiniciarJuego = () => {
+        reiniciarJuego(
+            setNivelActual,
+            setPreguntasCorrectas,
+            setPreguntasRespondidasCorrectamente
+        );
+        // Cualquier otra lógica adicional aquí
+    };
 
-    const ayudaCincuenta = async () => {
-        // Asegúrate de que preguntaActual y preguntaActual.id están definidos
+    const manejarAyudaCincuenta = () => {
         if (preguntaActual && preguntaActual.id) {
-            const response = await fetch(
-                `/ayuda-cincuenta/${preguntaActual.id}`,
-                {
-                    headers: {
-                        Accept: "application/json",
-                    },
-                }
-            );
-            if (response.ok) {
-                const data = await response.json();
-                // Actualiza el estado con las respuestas filtradas
-                setRespuestasFiltradas(data);
-            } else {
-                console.error("Error al obtener las respuestas filtradas");
-            }
+            ayudaCincuenta(preguntaActual.id, setRespuestasFiltradas);
         }
     };
 
@@ -259,7 +247,8 @@ const Preguntas = ({
                 </div>
                 <div>
                     <button
-                        onClick={reiniciarJuego}
+                        // onClick={reiniciarJuego}
+                        onClick={manejarReiniciarJuego}
                         className=" text-white font-bold py-2 px-4 rounded mr-2"
                     >
                         <FaRedoAlt className="h-5 w-5" />
@@ -269,7 +258,7 @@ const Preguntas = ({
             <div className=" flex items-center justify-between">
                 <div>
                     <button
-                        onClick={ayudaCincuenta}
+                        onClick={manejarAyudaCincuenta}
                         className="border-2 rounded-full text-white font-bold px-2 "
                     >
                         50/50
@@ -280,21 +269,8 @@ const Preguntas = ({
                     id="temporizador"
                     className="flex flex-col justify-center gap-2 items-center text-base text-center mb-2 lg:text-2xl"
                 >
-                    <div className="flex items-center gap-1">
-                        <BsHourglassSplit className="h-4 w-4 md:h-10 md:w-10" />
-                        <span className="font-bold ">
-                            {tiempoRestante}{" "}
-                        </span>{" "}
-                        <p>Seg</p>
-                    </div>
-
-                    <div className="flex justify-center gap-2 ml-2">
-                        <button onClick={iniciarTemporizador}>
-                            <FaRegPlayCircle className="h-4 w-4" />
-                        </button>
-                        <button onClick={detenerTemporizador}>
-                            <FaRegStopCircle className="h-5 w-5" />
-                        </button>
+                    <div>
+                        <Temporizador />
                     </div>
                 </div>
             </div>{" "}
@@ -337,8 +313,11 @@ const Preguntas = ({
                               key={index}
                               className={`border-2`}
                               onClick={() =>
-                                  verificarRespuesta(respuesta, index)
+                                  manejarVerificarRespuesta(respuesta, index)
                               }
+                              //   onClick={() =>
+                              //       verificarRespuesta(respuesta, index)
+                              //   }
                           >
                               {respuesta}
                           </button>
@@ -354,8 +333,11 @@ const Preguntas = ({
                               key={index}
                               className={`${styles.respuestas}`}
                               onClick={() =>
-                                  verificarRespuesta(respuesta, index)
+                                  manejarVerificarRespuesta(respuesta, index)
                               }
+                              //   onClick={() =>
+                              //       verificarRespuesta(respuesta, index)
+                              //   }
                           >
                               {respuesta}
                           </button>
