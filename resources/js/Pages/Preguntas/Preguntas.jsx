@@ -11,13 +11,7 @@ import {
     FaEye,
 } from "react-icons/fa";
 import { MdSportsScore } from "react-icons/md";
-// import {
-//     NIVEL_INICIAL,
-//     obtenerNuevoNivel,
-//     debeSubirDeNivel,
-// } from "@/Utils/preguntasUtils";
-
-//Se creo la rama prueba"
+import useTemporizador from "@/Utils/useTemporizador";
 
 const Preguntas = ({
     preguntaActual,
@@ -27,8 +21,11 @@ const Preguntas = ({
 }) => {
     console.log("AQUI", preguntaActual, indiceActual, totalPreguntas, puntaje);
     //Tiempo
-    const [tiempoRestante, setTiempoRestante] = useState(30);
-    const [temporizador, setTemporizador] = useState(null);
+    const { tiempoRestante, iniciarTemporizador, detenerTemporizador } =
+        useTemporizador(30);
+
+    // const [tiempoRestante, setTiempoRestante] = useState(30);
+    // const [temporizador, setTemporizador] = useState(null);
     //Puntaje
     const [puntajeLocal, setPuntajeLocal] = useState(puntaje);
 
@@ -93,21 +90,6 @@ const Preguntas = ({
     }, [nivelActual, preguntasCorrectas, preguntasRespondidasCorrectamente]); // Dependencias
 
     useEffect(() => {
-        // Iniciar el temporizador cuando el componente se monta
-        iniciarTemporizador();
-        setPuntajeLocal(puntaje);
-    }, [puntaje]);
-
-    // useEffect(() => {
-    //     iniciarTemporizador();
-    //     return () => {
-    //         if (temporizador) {
-    //             clearInterval(temporizador);
-    //         }
-    //     };
-    // }, []);
-
-    useEffect(() => {
         setPuntajeLocal(puntaje);
     }, [puntaje]);
 
@@ -124,25 +106,25 @@ const Preguntas = ({
         }
     }, [preguntasCorrectas]);
 
-    const iniciarTemporizador = () => {
-        if (!temporizador) {
-            const id = setInterval(() => {
-                setTiempoRestante((prevTiempo) => {
-                    if (prevTiempo <= 1) {
-                        clearInterval(id);
-                        return 0;
-                    }
-                    return prevTiempo - 1;
-                });
-            }, 1000);
-            setTemporizador(id);
-        }
-    };
+    // const iniciarTemporizador = () => {
+    //     if (!temporizador) {
+    //         const id = setInterval(() => {
+    //             setTiempoRestante((prevTiempo) => {
+    //                 if (prevTiempo <= 1) {
+    //                     clearInterval(id);
+    //                     return 0;
+    //                 }
+    //                 return prevTiempo - 1;
+    //             });
+    //         }, 1000);
+    //         setTemporizador(id);
+    //     }
+    // };
 
-    const detenerTemporizador = () => {
-        clearInterval(temporizador);
-        setTemporizador(null);
-    };
+    // const detenerTemporizador = () => {
+    //     clearInterval(temporizador);
+    //     setTemporizador(null);
+    // };
 
     const verificarRespuesta = async (respuesta, index) => {
         if (respuestaSeleccionada) {
@@ -206,16 +188,34 @@ const Preguntas = ({
     const irASiguientePregunta = () => {
         const nuevoIndice = indiceActual + 1;
         if (nuevoIndice < totalPreguntas) {
-            Inertia.get(`/siguiente-pregunta/${nuevoIndice}`);
+            Inertia.visit(`/siguiente-pregunta/${nuevoIndice}`, {
+                preserveState: true,
+            });
         }
     };
 
     const irAPreguntaAnterior = () => {
         const nuevoIndice = indiceActual - 1;
         if (nuevoIndice >= 0) {
-            Inertia.get(`/pregunta-anterior/${nuevoIndice}`);
+            Inertia.visit(`/pregunta-anterior/${nuevoIndice}`, {
+                preserveState: true,
+            });
         }
     };
+
+    // const irASiguientePregunta = () => {
+    //     const nuevoIndice = indiceActual + 1;
+    //     if (nuevoIndice < totalPreguntas) {
+    //         Inertia.get(`/siguiente-pregunta/${nuevoIndice}`);
+    //     }
+    // };
+
+    // const irAPreguntaAnterior = () => {
+    //     const nuevoIndice = indiceActual - 1;
+    //     if (nuevoIndice >= 0) {
+    //         Inertia.get(`/pregunta-anterior/${nuevoIndice}`);
+    //     }
+    // };
 
     // const reiniciarJuego = () => {
     //     Inertia.get(`/reiniciar-juego`);

@@ -185,6 +185,5 @@ public function ayudaCincuenta(Request $request, $id) {
     // return response()->json($respuestasMostrar);
 }
 
-
-    
+   
 }
