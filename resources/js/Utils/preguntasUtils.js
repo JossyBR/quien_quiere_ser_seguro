@@ -1,45 +1,89 @@
 // import { Inertia } from "@inertiajs/inertia";
 
-//Para manejar los niveles
-
-export const NIVEL_INICIAL = 1;
-export const MAX_NIVELES = 3;
-export const ACIERTOS_PARA_SUBIR_NIVEL = 3;
-
-// Función para determinar si el jugador debe subir de nivel
-export const debeSubirDeNivel = (aciertosConsecutivos) => {
-    return aciertosConsecutivos >= ACIERTOS_PARA_SUBIR_NIVEL;
-};
-
-// Función para obtener el nuevo nivel, si es aplicable
-export const obtenerNuevoNivel = (nivelActual, aciertosConsecutivos) => {
-    if (debeSubirDeNivel(aciertosConsecutivos)) {
-        const nuevoNivel = nivelActual + 1;
-        return nuevoNivel > MAX_NIVELES ? MAX_NIVELES : nuevoNivel;
+export const ayudaCincuenta = async (preguntaId, setRespuestasFiltradas) => {
+    if (preguntaId) {
+        const response = await fetch(`/ayuda-cincuenta/${preguntaId}`, {
+            headers: {
+                Accept: "application/json",
+            },
+        });
+        if (response.ok) {
+            const data = await response.json();
+            // Actualiza el estado con las respuestas filtradas
+            setRespuestasFiltradas(data);
+        } else {
+            console.error("Error al obtener las respuestas filtradas");
+        }
     }
-    return nivelActual;
 };
 
+export const reiniciarJuego = (
+    setNivelActual,
+    setPreguntasCorrectas,
+    setPreguntasRespondidasCorrectamente
+) => {
+    localStorage.removeItem("estadoDelJuego"); // Limpia el estado guardado
 
-// export const iniciarTemporizador = () => {
-//     if (!temporizador) {
-//         const id = setInterval(() => {
-//             setTiempoRestante((prevTiempo) => {
-//                 if (prevTiempo <= 1) {
-//                     clearInterval(id);
-//                     return 0;
-//                 }
-//                 return prevTiempo - 1;
-//             });
-//         }, 1000);
-//         setTemporizador(id);
-//     }
-// };
+    // Restablece los estados locales al estado inicial deseado
+    setNivelActual(1);
+    setPreguntasCorrectas(0);
+    setPreguntasRespondidasCorrectamente(new Set());
 
-// export const detenerTemporizador = () => {
-//     clearInterval(temporizador);
-//     setTemporizador(null);
-// };
+    // Redirección o lógica adicional para reiniciar el juego
+    Inertia.get(`/reiniciar-juego`);
+};
+
+export async function verificarRespuesta({
+    respuesta,
+    preguntaId,
+    csrfToken,
+    index,
+    setRespuestaSeleccionada,
+    detenerTemporizador,
+    setPreguntasCorrectas,
+    preguntasRespondidasCorrectamente,
+    setPreguntasRespondidasCorrectamente,
+    setPuntajeLocal,
+}) {
+    setRespuestaSeleccionada(true);
+    detenerTemporizador();
+
+    const response = await fetch(`/verificar-respuesta/${preguntaId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+        },
+        body: JSON.stringify({ respuesta }),
+    });
+
+//     const data = await response.json();
+
+    if (data.correcta) {
+        document.getElementById(
+            `respuesta-btn-${index}`
+        ).style.backgroundColor = "green";
+
+        // Verifica si la pregunta ya ha sido respondida correctamente antes
+        if (!preguntasRespondidasCorrectamente.has(preguntaActual.id)) {
+            setPreguntasCorrectas(preguntasCorrectas + 1); // Incrementar solo si no se ha respondido antes
+            setPreguntasRespondidasCorrectamente((prev) =>
+                new Set(prev).add(preguntaActual.id)
+            );
+            guardarEstadoEnLocalStorage();
+        }
+    } else {
+        document.getElementById(
+            `respuesta-btn-${index}`
+        ).style.backgroundColor = "red";
+    }
+    console.log("Preguntas correctas2", preguntasCorrectas);
+    console.log("Nivel actual2:", nivelActual);
+
+    // Actualiza el puntaje si es necesario
+    setPuntajeLocal(data.puntaje);
+    // setRespuestaSeleccionada(false); // Permite al usuario seleccionar una respuesta nueva en la próxima pregunta
+}
 
 // export const verificarRespuesta = async (respuesta, index) => {
 //     // Obtener el token CSRF del documento
@@ -92,22 +136,4 @@ export const obtenerNuevoNivel = (nivelActual, aciertosConsecutivos) => {
 //     Inertia.get(`/reiniciar-juego`);
 // };
 
-// // const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
-
-// export const ayudaCincuenta = async () => {
-//     // Asegúrate de que preguntaActual y preguntaActual.id están definidos
-//     if (preguntaActual && preguntaActual.id) {
-//         const response = await fetch(`/ayuda-cincuenta/${preguntaActual.id}`, {
-//             headers: {
-//                 Accept: "application/json",
-//             },
-//         });
-//         if (response.ok) {
-//             const data = await response.json();
-//             // Actualiza el estado con las respuestas filtradas
-//             setRespuestasFiltradas(data);
-//         } else {
-//             console.error("Error al obtener las respuestas filtradas");
-//         }
-//     }
-// };
+// const [respuestasFiltradas, setRespuestasFiltradas] = useState([]);
